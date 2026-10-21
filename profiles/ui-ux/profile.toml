@@ -19,3 +19,10 @@ big_tech_design = 2
 growth_startup = 3
 agency_studio = 4
 in_house_enterprise = 5
+
+# Columns of the dashboard grid: a posting lands in the first family whose words appear in its title.
+[families]
+"product design" = ["product designer", "ux designer", "ui designer", "interaction"]
+"ux research" = ["ux research", "user research"]
+"visual / brand" = ["visual designer", "brand designer", "graphic"]
+"design systems" = ["design system"]

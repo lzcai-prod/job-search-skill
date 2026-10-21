@@ -3,237 +3,144 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Job Search Guide</title>
+<title>Job Pipeline</title>
 <style>
-  :root {
-    --bg:#ffffff; --fg:#1b1f24; --muted:#5b6570; --line:#dfe3e8; --card:#f6f8fa;
-    --accent:#2b5fd9; --accent-fg:#ffffff; --good:#1a7f4b; --warn:#9a6700; --bad:#b42318;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --card:#1b1f24;
-      --accent:#7aa2ff; --accent-fg:#0d1117; --good:#56d364; --warn:#e3b341; --bad:#ff8b81;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --card:#1b1f24;
-    --accent:#7aa2ff; --accent-fg:#0d1117; --good:#56d364; --warn:#e3b341; --bad:#ff8b81;
-  }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, sans-serif; }
-  main { max-width:920px; margin:0 auto; padding:16px 16px 64px; }
-  h1 { font-size:1.6rem; margin:.4rem 0 .2rem; }
-  h2 { font-size:1.2rem; margin:1.6rem 0 .4rem; }
-  h3 { font-size:1.05rem; }
-  a { color:var(--accent); }
-  code { background:var(--card); padding:1px 5px; border-radius:4px; }
-  .sub { color:var(--muted); margin:0 0 12px; }
-  .note { background:var(--card); border-left:4px solid var(--accent); padding:10px 14px; border-radius:6px; margin:10px 0; }
-  .tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin:14px 0 16px; overflow-x:auto; }
-  .tab { appearance:none; background:none; border:0; color:var(--muted); font:inherit; font-weight:600;
-         padding:10px 10px; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
-  .tab[aria-selected="true"] { color:var(--fg); border-bottom-color:var(--accent); }
-  .tiles { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin:0 0 14px; }
-  @media (min-width:640px) { .tiles { grid-template-columns:repeat(4, 1fr); } }
-  .tile { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
-  .tile b { display:block; font-size:1.8rem; line-height:1.1; }
-  .tile span { color:var(--muted); font-size:.85rem; }
-  .controls { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
-  .controls input, .controls select {
-    font:inherit; color:var(--fg); background:var(--card); border:1px solid var(--line);
-    border-radius:8px; padding:9px 10px; min-width:0; }
-  .controls input { flex:1 1 200px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:0 0 10px; }
-  .card.skip { opacity:.55; }
-  .row { display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-  .co { font-weight:700; }
-  .chip { display:inline-block; font-size:.75rem; font-weight:700; padding:2px 8px; border-radius:99px;
-          border:1px solid var(--line); color:var(--muted); }
-  .chip.t1 { color:var(--good); border-color:var(--good); }
-  .chip.t2 { color:var(--accent); border-color:var(--accent); }
-  .role { display:block; margin:2px 0; font-weight:600; overflow-wrap:anywhere; }
-  .meta { color:var(--muted); font-size:.88rem; }
-  .actions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
-  .btn { appearance:none; font:inherit; font-size:.85rem; font-weight:600; color:var(--fg); background:none;
-         border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer; }
-  .btn[aria-pressed="true"] { background:var(--accent); color:var(--accent-fg); border-color:var(--accent); }
-  details { margin-top:8px; color:var(--muted); font-size:.85rem; }
-  summary { cursor:pointer; }
-  .empty { color:var(--muted); padding:20px 0; text-align:center; }
-  .grp { margin:0 0 18px; }
-  .grp h3 { margin:0 0 6px; }
-  .co-list { display:flex; flex-wrap:wrap; gap:6px; }
-  .pill { background:var(--card); border:1px solid var(--line); border-radius:99px; padding:4px 12px; font-size:.9rem; }
-  .card input.note-in { width:100%; margin-top:8px; font:inherit; font-size:.9rem; color:var(--fg);
-         background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:6px 8px; }
-  .status-sel { font:inherit; font-size:.85rem; font-weight:600; color:var(--fg); background:var(--bg);
-         border:1px solid var(--line); border-radius:8px; padding:4px 6px; }
-  .add { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin:0 0 12px; }
-  .add summary { font-weight:600; color:var(--fg); }
-  .add form { display:grid; grid-template-columns:1fr; gap:8px; margin-top:10px; }
-  @media (min-width:640px) { .add form { grid-template-columns:1fr 1fr; } .add form .wide { grid-column:1 / -1; } }
-  .add input, .add select { font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--line);
-         border-radius:8px; padding:9px 10px; min-width:0; width:100%; }
-  .btn.primary { background:var(--accent); color:var(--accent-fg); border-color:var(--accent); }
-  .btn.danger { color:var(--bad); }
-  .store { color:var(--muted); font-size:.8rem; margin:6px 0 0; }
-  [hidden] { display:none !important; }
+:root{--bg:#f6f7f9;--fg:#1c2330;--mut:#667085;--card:#fff;--line:#e3e6eb;--acc:#2563eb;--bad:#b42318}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161d;--fg:#e8ebf0;--mut:#98a2b3;--card:#1b212b;--line:#2b3340;--acc:#6ea0ff;--bad:#ff8a80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12161d;--fg:#e8ebf0;--mut:#98a2b3;--card:#1b212b;--line:#2b3340;--acc:#6ea0ff;--bad:#ff8a80;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font:14px system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:20px;margin:0 0 4px}
+h2{font-size:14px;margin:0 0 10px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+a{color:var(--acc)}
+.sub{color:var(--mut);margin-bottom:14px}
+.note{color:var(--mut);font-size:12px;margin:6px 0}
+.banner{background:var(--card);border:1px solid var(--acc);border-radius:10px;padding:10px 12px;margin-bottom:12px;line-height:1.5}
+.tabs{display:flex;gap:6px;margin:0 0 14px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{font:600 14px system-ui,sans-serif;background:none;border:0;border-bottom:2px solid transparent;color:var(--mut);padding:8px 12px;cursor:pointer;min-height:40px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--acc)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.k,.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.card{margin-bottom:14px}
+.k b{display:block;font-size:24px}.k span{color:var(--mut)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:center}
+th:first-child{text-align:left;white-space:nowrap}
+thead th{font-size:11px;color:var(--mut);text-transform:uppercase}
+td[style]{background:color-mix(in srgb,var(--acc) calc(var(--a)*100%),transparent)}
+td small,.role small{display:block;font-size:10px;color:var(--mut)}
+.z{color:var(--mut)}.tot{font-weight:600}
+.todo td{text-align:left;vertical-align:top}
+.why{color:var(--mut);font-size:12px}
+.role{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;padding:2px 0}
+.role small{display:inline}
+.p{padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;background:var(--line)}
+.p.ok{background:#dcfce7;color:#166534}.p.rej{background:#fee2e2;color:#991b1b}
+.fr{display:grid;grid-template-columns:130px 1fr 40px;align-items:center;gap:8px;margin:6px 0}
+.fr i{display:block;height:14px;background:var(--acc);border-radius:4px}.fr b{text-align:right}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+.cols .card{margin-bottom:0}
+.empty{color:var(--mut);padding:18px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.btn{font:600 13px system-ui,sans-serif;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--card)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,.tabs button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input,select,textarea{font:13px system-ui,sans-serif;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 8px;min-width:0}
+.bar input[type=search]{flex:1 1 220px}
+table.ed td{text-align:left;padding:4px}
+table.ed input,table.ed select{width:100%}
+table.ed td.dt input{min-width:130px}
+.addrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.runbox{background:var(--card);border:1px solid var(--acc);border-radius:10px;padding:10px 12px;margin-bottom:12px;line-height:1.5}
+.jd{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+.jdhead{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between}
+.jdhead b{font-size:15px}.jdfile{color:var(--mut);font-size:12px;word-break:break-all}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.fld label{display:block;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.fld input,.fld select,.fld textarea{width:100%}
+.fld textarea{min-height:56px;resize:vertical}
+.full{grid-column:1/-1}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
 <main>
-  <p class="note">Demo with <strong>sample data</strong>. <a href="https://github.com/lzcai-prod/job-search-skill">Get the skill</a> and ask your AI agent to run it on your own search.</p>
-  <h1>Your job search</h1>
-  <p class="sub">Product design or UX research role at a company with a real design team (intern; New York, San Francisco, Remote)</p>
+  <p class="banner">Design demo with <strong>sample data</strong>. <a href="https://github.com/lzcai-prod/job-search-skill">Get the skill</a> and ask your AI agent to run it on your own search.</p>
+  <div class="tabs" role="tablist" id="tabs"></div>
 
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-ranked" aria-selected="true" data-tab="ranked">Ranked list</button>
-    <button class="tab" role="tab" id="tab-tracker" aria-selected="false" data-tab="tracker">Tracker</button>
-    <button class="tab" role="tab" id="tab-universe" aria-selected="false" data-tab="universe">Companies</button>
-    <button class="tab" role="tab" id="tab-method" aria-selected="false" data-tab="method">Method</button>
-  </div>
-
-  <section id="ranked">
-    <div class="tiles" id="tiles"></div>
-    <div class="controls">
-      <input id="q" type="search" placeholder="Filter by company, role or location" aria-label="Filter">
-      <select id="tier" aria-label="Tier"><option value="">All tiers</option></select>
-      <select id="triage" aria-label="Status">
-        <option value="">All statuses</option>
-        <option value="none">Not triaged</option>
-        <option value="apply">Apply</option>
-        <option value="maybe">Maybe</option>
-        <option value="skip">Skip</option>
-      </select>
+  <section id="tab-apps">
+    <h1>Applications</h1>
+    <div class="sub" id="apps-sub"></div>
+    <div id="scanbox" hidden>
+      <div class="bar"><button class="btn pri" type="button" disabled>Scan mailbox now</button>
+        <span class="note">Demo only: this skill does not include a mailbox scan.</span></div>
+      <div class="note" style="margin-bottom:12px">Last scan: done &middot; 2 emails read since 2026-10-19: no status changes (Northwind questionnaire request). Runs automatically at 7:47 am and 7:47 pm.</div>
     </div>
-    <p class="note"><strong>You review and submit every application yourself.</strong>
-    Mark each posting Apply, Maybe or Skip after reading it. Your marks stay in this browser only.</p>
-    <div id="list"></div>
+    <div class="bar"><input id="aq" type="search" placeholder="Filter by firm, role or status" aria-label="Filter">
+      <select id="ast" aria-label="Status"><option value="">All statuses</option></select></div>
+    <div class="kpis" id="a-kpis"></div>
+    <div class="card"><div class="scroll"><table class="ed"><thead><tr><th>Firm</th><th>Role</th><th>Status</th><th>Applied</th><th>Link</th><th>Note</th></tr></thead><tbody id="a-body"></tbody></table></div>
+      <form id="addform" class="addrow"><input name="company" placeholder="Firm" required aria-label="Firm"><input name="role" placeholder="Role" required aria-label="Role"><input name="url" type="url" placeholder="Link (optional)" aria-label="Link"><button class="btn" type="submit">Add row</button></form>
+      <div class="note" id="storeinfo"></div></div>
   </section>
 
-  <section id="tracker" hidden>
-    <div class="tiles" id="ttiles"></div>
-    <details class="add">
-      <summary>Add an application</summary>
-      <form id="addform">
-        <input name="company" placeholder="Company" required aria-label="Company">
-        <input name="role" placeholder="Role" required aria-label="Role">
-        <input name="url" type="url" placeholder="Link to the posting (optional)" aria-label="Link">
-        <select name="status" aria-label="Status"></select>
-        <button class="btn primary wide" type="submit">Add</button>
-      </form>
-    </details>
-    <div class="controls">
-      <input id="tq" type="search" placeholder="Filter by company, role or status" aria-label="Filter applications">
-      <select id="tstatus" aria-label="Status filter"><option value="">All statuses</option></select>
-      <button class="btn" id="export" type="button">Export CSV</button>
-    </div>
-    <div id="tlist"></div>
-    <p class="store" id="storeinfo"></p>
+  <section id="tab-cv" hidden>
+    <h1>CV Portal</h1>
+    <div class="sub">Drop job descriptions in a folder, add your instructions on each card and press Save &amp; queue. Tailored CVs land in an output folder.</div>
+    <div class="runbox"><b>Demo only:</b> this shows the layout of a CV queue. The skill does not include a CV runner, and it never invents experience.
+      <div class="note">Last run: generate &middot; done &middot; 1 new JD found (Harbor Health), 0 CVs generated.</div></div>
+    <div id="jds"></div>
   </section>
 
-  <section id="universe" hidden></section>
-
-  <section id="method" hidden>
-    <h2>The approach: top-down</h2>
-<p>Most people search bottom-up: type a job title into a search box and scroll. You get whatever the algorithm shows, it is the same list everyone else sees, and you read hundreds of listings at employers you do not care about.</p>
-<p>Do it top-down instead.</p>
-<ul>
-<li><strong>Start from employers, not listings.</strong> Decide which companies you would be proud to join, in tiers. Then watch their job boards directly.</li>
-<li><strong>Rank before you read.</strong> A cheap keyword score sorts postings first. Spend your attention on the top of the list.</li>
-<li><strong>You review, you submit.</strong> Tools find and rank. You read every posting and press every submit button. This protects you from bad auto-applications and keeps your voice yours.</li>
-<li><strong>Keep a record.</strong> Write down what you applied to and when, so follow-ups and weekly reviews are easy.</li>
-<li><strong>Treat networking as part of the search.</strong> An application plus a short, honest message to a person on the team beats either alone.</li>
-</ul>
-<p><strong>Ask your agent:</strong> &quot;Explain the top-down method back to me, then ask me about my target role and cities.&quot;</p>
-<h2>Build your universe of employers</h2>
-<ol>
-<li><strong>Write your dream list.</strong> 20 to 30 companies you would love to work at. This is your taste, and it is the most valuable input.</li>
-<li><strong>Expand it.</strong> Your agent adds companies from the sources in <code>references/sources.md</code>: job boards, funded-company lists, design or industry awards, alumni lists. Aim for 200 to 300.</li>
-<li><strong>Bucket them.</strong> Buckets are kinds of employer (for example &quot;design-forward product&quot;, &quot;agency&quot;, &quot;startup&quot;). Rank the buckets by how much you want each.</li>
-<li><strong>Tier them.</strong> Score each company 1 to 5 on the things you care about, such as team quality, junior hiring, location, pay and interest in the product. Tier 1 is best. Unlisted companies default to tier 5.</li>
-<li><strong>Prune.</strong> Delete anything you would not accept an offer from. A short honest list beats a long vague one.</li>
-</ol>
-<p><strong>Ask your agent:</strong> &quot;Interview me, then build my profile folder and a first company list. Show it to me before you continue.&quot;</p>
-<h2>Rank and triage</h2>
-<p>The ranked list sorts by <strong>tier first</strong>, then <strong>keyword score</strong>, then <strong>newest</strong>.</p>
-<ul>
-<li>Positive keywords raise a posting&#x27;s score. Title matches count more than description matches.</li>
-<li>Negative keywords lower it, so roles that are obviously off target sink.</li>
-<li>Filters remove postings outside your cities or above your level.</li>
-<li>Every row shows <strong>why</strong> it scored as it did. If a result looks wrong, fix the keywords, not the list.</li>
-</ul>
-<p>Triage the top of the list: open each posting, read it, and mark it *apply*, *maybe* or *skip*. Do not apply to a posting you have not read.</p>
-<p><strong>Ask your agent:</strong> &quot;Rank this week&#x27;s postings and explain the top five. Which keywords should I change?&quot;</p>
-<h2>Apply safely</h2>
-<ul>
-<li><strong>You submit every application.</strong> An agent may help you draft answers, but you read, edit and submit them.</li>
-<li><strong>Never let a tool fill</strong> work-authorization, sponsorship, EEO, disability or criminal-history questions. Answer those yourself, accurately.</li>
-<li><strong>Do not invent experience.</strong> Tailor by choosing and ordering true facts, never by making things up.</li>
-<li><strong>Proofread</strong> everything that goes out. Check names, dates and the company name in every message.</li>
-<li><strong>Do not bypass CAPTCHAs</strong> or log-in walls. If a site blocks automation, apply by hand.</li>
-<li><strong>Log it.</strong> Keep every application in the guide&#x27;s Tracker tab: the date, role, link, status and a note on which version of your materials you used. See <code>06-tailor-materials.md</code> for how to tailor honestly.</li>
-</ul>
-<p><strong>Ask your agent:</strong> &quot;Draft an answer to this question using only the facts I gave you, then list anything you were unsure about.&quot;</p>
-<h2>Weekly routine</h2>
-<ol>
-<li><strong>Scan</strong> (10 minutes): re-run fetch and rank. Look only at what is new.</li>
-<li><strong>Triage</strong> (20 minutes): read the top new postings, mark apply, maybe or skip.</li>
-<li><strong>Apply</strong> (as many as you can do well): read, tailor, proofread, submit by hand, log it.</li>
-<li><strong>Reach out</strong> (15 minutes): one short, specific message to someone at a tier 1 or 2 company.</li>
-<li><strong>Update the Tracker</strong>: move each application to its new status, and follow up on anything with no reply after about two weeks.</li>
-<li><strong>Adjust</strong>: once a month, prune companies that never produce matches and add new ones.</li>
-</ol>
-<p><strong>Ask your agent:</strong> &quot;Run this week&#x27;s scan and show me only new postings at tier 1 and 2 companies.&quot;</p>
-<h2>Tailor your materials (honestly)</h2>
-<p>Tailoring means choosing and ordering true facts so they fit the role. It never means inventing anything.</p>
-<ul>
-<li><strong>Start from a master version</strong> of your portfolio, CV and cover letter that contains everything true and relevant. Each application gets a copy, never a rewrite from memory.</li>
-<li><strong>Read the posting for what it values</strong>, then lead with the two or three things of yours that match it. Cut or shorten the rest.</li>
-<li><strong>Allowed:</strong> reorder bullets, pick which projects to show, mirror the posting&#x27;s own words for skills you really have, adjust the opening line.</li>
-<li><strong>Not allowed:</strong> adding skills, tools, titles, dates, metrics or results you do not have; changing dates or grades; claiming work that was a team&#x27;s as only yours.</li>
-<li><strong>Keep a short note per application</strong> of what you changed, in the tracker&#x27;s note field, so you can answer for it in an interview.</li>
-<li><strong>Proofread out loud.</strong> Check the company name, the role title and every date against the posting before you send.</li>
-<li><strong>Designers:</strong> the portfolio is the product. Pick 2 or 3 case studies that match the role, show the process and your decisions, and say plainly what was yours and what was the team&#x27;s.</li>
-</ul>
-<p><strong>Ask your agent:</strong> &quot;Here is my master CV and this posting. Suggest which bullets to lead with and which to shorten, using only facts that are already in my CV. List anything in the posting I should ask about instead of claiming.&quot;</p>
+  <section id="tab-dash" hidden>
+    <h1>Dashboard</h1>
+    <div class="sub" id="dash-sub"></div>
+    <div class="kpis" id="d-kpis"></div>
+    <div class="card"><h2>Postings: firm type by job family (applied shown in each cell)</h2><div class="scroll" id="d-grid"></div></div>
+    <div class="card"><h2>What to submit next</h2><div class="note">Firms you have not applied to, best score first.</div><div class="scroll" id="d-next"></div></div>
+    <div class="cols"><div class="card"><h2>Funnel</h2><div id="d-funnel"></div></div>
+      <div class="card"><h2>Applications per firm</h2><div id="d-firms"></div></div></div>
+    <div class="card" style="margin-top:14px"><h2>Firms by tier and my status</h2><div class="scroll" style="max-height:520px;overflow:auto" id="d-table"></div></div>
   </section>
 </main>
 
-<script type="application/json" id="data">{"ranked": [{"company": "Notion", "title": "UX Researcher, Intern", "location": "Remote", "url": "https://example.com/jobs/2", "description": "Run user research studies and share insights.", "posted_at": "2026-10-18", "ats": "ashby", "tier": 1, "score": 25.0, "reasons": ["+12 title: ux researcher", "+9 title: ux research", "+3 title: intern", "+1 description: user research"]}, {"company": "Figma", "title": "Product Design Intern", "location": "New York, NY", "url": "https://example.com/jobs/1", "description": "Work in Figma on design systems and prototyping with our product design team.", "posted_at": "2026-10-15", "ats": "greenhouse", "tier": 1, "score": 16.0, "reasons": ["+9 title: design intern", "+3 title: intern", "+2 description: design systems", "+1 description: figma", "+1 description: prototyping"]}, {"company": "Duolingo", "title": "Associate Product Designer", "location": "San Francisco, CA", "url": "https://example.com/jobs/3", "description": "Interaction design and visual design for learner experiences.", "posted_at": "2026-10-10", "ats": "greenhouse", "tier": 2, "score": 18.0, "reasons": ["+12 title: product designer", "+3 title: associate", "+3 description: interaction design"]}, {"company": "Some Startup", "title": "UI Designer", "location": "New York", "url": "https://example.com/jobs/4", "description": "Own the UI of our app. Figma required.", "posted_at": "2026-10-19", "ats": "lever", "tier": 5, "score": 10.0, "reasons": ["+9 title: ui designer", "+1 description: figma"]}], "companies": [{"company": "Figma", "bucket": "design_forward_product", "tier": 1}, {"company": "Linear", "bucket": "design_forward_product", "tier": 1}, {"company": "Notion", "bucket": "design_forward_product", "tier": 1}, {"company": "Stripe", "bucket": "design_forward_product", "tier": 1}, {"company": "Airbnb", "bucket": "design_forward_product", "tier": 1}, {"company": "Spotify", "bucket": "design_forward_product", "tier": 1}, {"company": "Canva", "bucket": "design_forward_product", "tier": 1}, {"company": "Duolingo", "bucket": "design_forward_product", "tier": 2}, {"company": "Webflow", "bucket": "design_forward_product", "tier": 2}, {"company": "Vercel", "bucket": "design_forward_product", "tier": 2}, {"company": "Miro", "bucket": "design_forward_product", "tier": 2}, {"company": "Asana", "bucket": "design_forward_product", "tier": 2}, {"company": "Pinterest", "bucket": "big_tech_design", "tier": 2}, {"company": "Dropbox", "bucket": "big_tech_design", "tier": 2}, {"company": "Adobe", "bucket": "big_tech_design", "tier": 2}, {"company": "Shopify", "bucket": "growth_startup", "tier": 3}, {"company": "Intercom", "bucket": "growth_startup", "tier": 3}, {"company": "Mercury", "bucket": "growth_startup", "tier": 3}, {"company": "Ramp", "bucket": "growth_startup", "tier": 3}, {"company": "Calm", "bucket": "growth_startup", "tier": 3}, {"company": "Coursera", "bucket": "growth_startup", "tier": 3}, {"company": "IDEO", "bucket": "agency_studio", "tier": 4}], "profile": {"name": "ui-ux"}, "statuses": [{"name": "To apply", "stage": "planned"}, {"name": "Submitted", "stage": "open"}, {"name": "OA invited", "stage": "open"}, {"name": "OA done", "stage": "open"}, {"name": "Interview", "stage": "open"}, {"name": "Offer", "stage": "won"}, {"name": "Rejected", "stage": "closed"}, {"name": "Withdrawn", "stage": "closed"}], "demo": true, "seedApps": [{"id": "demo1", "company": "Northwind Studio", "role": "Product Design Intern", "url": "https://example.com/jobs/n1", "status": "Interview", "applied": "2026-10-02", "note": "Portfolio review done; case study round next week.", "history": [{"at": "2026-10-02", "from": "To apply", "to": "Submitted"}, {"at": "2026-10-09", "from": "Submitted", "to": "Interview"}]}, {"id": "demo2", "company": "Lumen Labs", "role": "UX Researcher, Intern", "url": "https://example.com/jobs/l1", "status": "OA done", "applied": "2026-10-05", "note": "Take-home submitted.", "history": [{"at": "2026-10-05", "from": "To apply", "to": "Submitted"}, {"at": "2026-10-10", "from": "Submitted", "to": "OA invited"}, {"at": "2026-10-12", "from": "OA invited", "to": "OA done"}]}, {"id": "demo3", "company": "Acme Corp", "role": "UI Designer", "url": "https://example.com/jobs/a1", "status": "Rejected", "applied": "2026-09-28", "note": "Template rejection; reapply next cycle.", "history": [{"at": "2026-09-28", "from": "To apply", "to": "Submitted"}, {"at": "2026-10-08", "from": "Submitted", "to": "Rejected"}]}, {"id": "demo4", "company": "Harbor Health", "role": "Associate Product Designer", "url": "https://example.com/jobs/h1", "status": "To apply", "applied": "", "note": "Tailor the portfolio intro first.", "history": []}]}</script>
+<script type="application/json" id="data">{"ranked": [{"company": "Notion", "title": "UX Researcher, Intern", "location": "Remote", "url": "https://example.com/jobs/2", "description": "Run user research studies and share insights.", "posted_at": "2026-10-18", "ats": "ashby", "tier": 1, "score": 25.0, "reasons": ["+12 title: ux researcher", "+9 title: ux research", "+3 title: intern", "+1 description: user research"]}, {"company": "Notion", "title": "Product Designer, Intern", "location": "New York", "url": "https://example.com/jobs/3", "description": "Interaction design for the editor. Figma and prototyping.", "posted_at": "2026-10-17", "ats": "ashby", "tier": 1, "score": 20.0, "reasons": ["+12 title: product designer", "+3 title: intern", "+3 description: interaction design", "+1 description: figma", "+1 description: prototyping"]}, {"company": "Stripe", "title": "Product Design Intern", "location": "San Francisco, CA", "url": "https://example.com/jobs/5", "description": "Product design across payments. Design systems, prototyping, portfolio required.", "posted_at": "2026-10-16", "ats": "greenhouse", "tier": 1, "score": 16.0, "reasons": ["+9 title: design intern", "+3 title: intern", "+2 description: design systems", "+1 description: prototyping", "+1 description: portfolio"]}, {"company": "Figma", "title": "Product Design Intern", "location": "New York, NY", "url": "https://example.com/jobs/1", "description": "Work in Figma on design systems and prototyping with our product design team.", "posted_at": "2026-10-15", "ats": "greenhouse", "tier": 1, "score": 16.0, "reasons": ["+9 title: design intern", "+3 title: intern", "+2 description: design systems", "+1 description: figma", "+1 description: prototyping"]}, {"company": "Airbnb", "title": "Product Design Intern", "location": "San Francisco, CA", "url": "https://example.com/jobs/15", "description": "Product design. Figma, prototyping.", "posted_at": "2026-10-08", "ats": "greenhouse", "tier": 1, "score": 14.0, "reasons": ["+9 title: design intern", "+3 title: intern", "+1 description: figma", "+1 description: prototyping"]}, {"company": "Linear", "title": "Design Systems Intern", "location": "Remote", "url": "https://example.com/jobs/6", "description": "Design systems and Figma components.", "posted_at": "2026-10-14", "ats": "ashby", "tier": 1, "score": 12.0, "reasons": ["+6 title: design systems", "+3 title: intern", "+2 description: design systems", "+1 description: figma"]}, {"company": "Spotify", "title": "Visual Designer Intern", "location": "New York", "url": "https://example.com/jobs/16", "description": "Visual design for brand campaigns.", "posted_at": "2026-10-07", "ats": "lever", "tier": 1, "score": 12.0, "reasons": ["+9 title: visual designer", "+3 title: intern"]}, {"company": "Adobe", "title": "UX Researcher Intern", "location": "New York, NY", "url": "https://example.com/jobs/7", "description": "User research for creative tools.", "posted_at": "2026-10-12", "ats": "lever", "tier": 2, "score": 25.0, "reasons": ["+12 title: ux researcher", "+9 title: ux research", "+3 title: intern", "+1 description: user research"]}, {"company": "Duolingo", "title": "Associate Product Designer", "location": "San Francisco, CA", "url": "https://example.com/jobs/4", "description": "Interaction design and visual design for learner experiences.", "posted_at": "2026-10-10", "ats": "greenhouse", "tier": 2, "score": 18.0, "reasons": ["+12 title: product designer", "+3 title: associate", "+3 description: interaction design"]}, {"company": "Pinterest", "title": "Visual Designer Intern", "location": "San Francisco, CA", "url": "https://example.com/jobs/8", "description": "Visual design and brand. Figma.", "posted_at": "2026-10-13", "ats": "greenhouse", "tier": 2, "score": 13.0, "reasons": ["+9 title: visual designer", "+3 title: intern", "+1 description: figma"]}, {"company": "Coursera", "title": "UX Designer Intern", "location": "Remote", "url": "https://example.com/jobs/11", "description": "UX design for learners. Prototyping and user research.", "posted_at": "2026-10-09", "ats": "greenhouse", "tier": 3, "score": 17.0, "reasons": ["+12 title: ux designer", "+3 title: intern", "+1 description: prototyping", "+1 description: user research"]}, {"company": "Ramp", "title": "Product Design Intern", "location": "New York, NY", "url": "https://example.com/jobs/10", "description": "Product design, prototyping, design systems.", "posted_at": "2026-10-11", "ats": "ashby", "tier": 3, "score": 15.0, "reasons": ["+9 title: design intern", "+3 title: intern", "+2 description: design systems", "+1 description: prototyping"]}, {"company": "Mercury", "title": "UI Designer", "location": "New York", "url": "https://example.com/jobs/9", "description": "Own the UI of our app. Figma required.", "posted_at": "2026-10-19", "ats": "lever", "tier": 3, "score": 10.0, "reasons": ["+9 title: ui designer", "+1 description: figma"]}], "companies": [{"company": "Figma", "bucket": "design_forward_product", "tier": 1}, {"company": "Linear", "bucket": "design_forward_product", "tier": 1}, {"company": "Notion", "bucket": "design_forward_product", "tier": 1}, {"company": "Stripe", "bucket": "design_forward_product", "tier": 1}, {"company": "Airbnb", "bucket": "design_forward_product", "tier": 1}, {"company": "Spotify", "bucket": "design_forward_product", "tier": 1}, {"company": "Canva", "bucket": "design_forward_product", "tier": 1}, {"company": "Duolingo", "bucket": "design_forward_product", "tier": 2}, {"company": "Webflow", "bucket": "design_forward_product", "tier": 2}, {"company": "Vercel", "bucket": "design_forward_product", "tier": 2}, {"company": "Miro", "bucket": "design_forward_product", "tier": 2}, {"company": "Asana", "bucket": "design_forward_product", "tier": 2}, {"company": "Pinterest", "bucket": "big_tech_design", "tier": 2}, {"company": "Dropbox", "bucket": "big_tech_design", "tier": 2}, {"company": "Adobe", "bucket": "big_tech_design", "tier": 2}, {"company": "Shopify", "bucket": "growth_startup", "tier": 3}, {"company": "Intercom", "bucket": "growth_startup", "tier": 3}, {"company": "Mercury", "bucket": "growth_startup", "tier": 3}, {"company": "Ramp", "bucket": "growth_startup", "tier": 3}, {"company": "Calm", "bucket": "growth_startup", "tier": 3}, {"company": "Coursera", "bucket": "growth_startup", "tier": 3}, {"company": "IDEO", "bucket": "agency_studio", "tier": 4}], "buckets": ["design_forward_product", "big_tech_design", "growth_startup", "agency_studio", "in_house_enterprise"], "families": [{"name": "product design", "words": ["product designer", "ux designer", "ui designer", "interaction"]}, {"name": "ux research", "words": ["ux research", "user research"]}, {"name": "visual / brand", "words": ["visual designer", "brand designer", "graphic"]}, {"name": "design systems", "words": ["design system"]}], "statuses": [{"name": "To apply", "stage": "planned"}, {"name": "Submitted", "stage": "open"}, {"name": "OA invited", "stage": "open"}, {"name": "OA done", "stage": "open"}, {"name": "Interview", "stage": "open"}, {"name": "Offer", "stage": "won"}, {"name": "Rejected", "stage": "closed"}, {"name": "Withdrawn", "stage": "closed"}], "profile": {"name": "ui-ux", "summary": "Product design or UX research role at a company with a real design team"}, "demo": true, "seedApps": [{"id": "demo1", "company": "Figma", "role": "Product Design Intern", "url": "https://example.com/jobs/f1", "status": "Interview", "applied": "2026-10-02", "note": "Portfolio review done; case study round next week.", "history": []}, {"id": "demo2", "company": "Spotify", "role": "UX Researcher, Intern", "url": "https://example.com/jobs/s1", "status": "OA done", "applied": "2026-10-05", "note": "Take-home submitted.", "history": []}, {"id": "demo3", "company": "Airbnb", "role": "UI Designer", "url": "", "status": "Rejected", "applied": "2026-09-28", "note": "Template rejection; reapply next cycle.", "history": []}, {"id": "demo4", "company": "Canva", "role": "Associate Product Designer", "url": "https://example.com/jobs/c1", "status": "OA invited", "applied": "2026-10-12", "note": "", "history": []}, {"id": "demo5", "company": "Webflow", "role": "Visual Designer", "url": "", "status": "Submitted", "applied": "2026-10-14", "note": "", "history": []}], "jds": [{"id": "jd1", "company": "Northwind Studio", "role": "Product Design Intern", "file": "20261019_northwind-studio-product-design-intern.pdf", "status": "new"}, {"id": "jd2", "company": "Harbor Health", "role": "Role not in file name (screenshot JD)", "file": "20261018_harbor-health-careers-screenshot.pdf", "status": "new"}], "framings": ["Auto (from JD)", "product design", "ux research", "visual / brand", "design systems"]}</script>
 <script>
 (function () {
   var data = JSON.parse(document.getElementById('data').textContent);
   var ranked = data.ranked, companies = data.companies, statuses = data.statuses;
   var stageOf = {}; statuses.forEach(function (s) { stageOf[s.name] = s.stage; });
   var NS = data.profile.name || 'default';
-  var MARKS_KEY = 'job-search-triage:' + NS;
-  var marks = {};
-  try { marks = JSON.parse(localStorage.getItem(MARKS_KEY) || '{}'); } catch (e) { marks = {}; }
-  function saveMarks() { try { localStorage.setItem(MARKS_KEY, JSON.stringify(marks)); } catch (e) { /* storage unavailable */ } }
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text !== undefined) n.textContent = text;
-    return n;
-  }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
   function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : ''; }
   function today() { return new Date().toISOString().slice(0, 10); }
   function newId() { return 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function norm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  function clear(n) { n.textContent = ''; return n; }
+  function copy(o) { return JSON.parse(JSON.stringify(o)); }
+  function kpi(box, v, label) { var k = el('div', 'k'); k.appendChild(el('b', '', String(v))); k.appendChild(el('span', '', label)); box.appendChild(k); }
+  function link(href, text) { var a = el('a', '', text); a.href = href; a.target = '_blank'; a.rel = 'noopener'; return a; }
+  function cell(text, cls) { return el('td', cls || '', text); }
+  function table(head, rows, cls) {
+    var t = el('table', cls || ''), th = el('thead'), tr = el('tr');
+    head.forEach(function (h) { tr.appendChild(el('th', '', h)); }); th.appendChild(tr); t.appendChild(th);
+    var tb = el('tbody'); rows.forEach(function (r) { tb.appendChild(r); }); t.appendChild(tb); return t;
+  }
 
   // ---------- Application store: private artifact database, else this browser ----------
-  var apps = [];
-  var listeners = [];
+  var apps = [], listeners = [];
   function notify() { listeners.forEach(function (f) { f(); }); }
-
   function localStore() {
-    var KEY = 'job-search-apps:' + NS, SEEDED = KEY + ':seeded';
-    var items = [];
+    var KEY = 'job-pipeline-apps:' + NS, SEEDED = KEY + ':seeded', items = null;
     try { items = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { items = null; }
     if (!items) {
-      var seeded = false;
-      try { seeded = localStorage.getItem(SEEDED) === '1'; } catch (e) { seeded = false; }
+      var seeded = false; try { seeded = localStorage.getItem(SEEDED) === '1'; } catch (e) { seeded = false; }
       items = (data.demo && !seeded && data.seedApps) ? data.seedApps.slice() : [];
     }
     function persist() {
@@ -242,223 +149,206 @@
     }
     apps = items.slice();
     return {
-      kind: 'This browser only. Clear site data and it is gone; use Export CSV to keep a copy.',
-      save: function (a) {
-        var i = items.findIndex(function (x) { return x.id === a.id; });
-        if (i >= 0) items[i] = a; else items.push(a);
-        persist(); return Promise.resolve();
-      },
-      remove: function (id) { items = items.filter(function (x) { return x.id !== id; }); persist(); return Promise.resolve(); }
+      kind: 'Edits save when you leave a cell. Stored in this browser only; clearing site data erases them.',
+      save: function (a) { var i = items.findIndex(function (x) { return x.id === a.id; }); if (i >= 0) items[i] = a; else items.push(a); persist(); return Promise.resolve(); }
     };
   }
-
   function dbStore(db, uid) {
-    var col = db.collection('data/users/' + uid);   // private to this viewer, even from the owner
-    var chain = Promise.resolve();
-    function queue(fn) { chain = chain.then(fn).catch(function () { /* surfaced by the next snapshot */ }); return chain; }
-    col.onSnapshot(function (snap) {
-      apps = snap.docs.map(function (d) { return d.data(); }); notify();
-    }, function () { /* terminal: keep what is on screen */ });
+    var col = db.collection('data/users/' + uid), chain = Promise.resolve();   // private to this viewer
+    col.onSnapshot(function (snap) { apps = snap.docs.map(function (d) { return d.data(); }); notify(); }, function () { /* keep what is shown */ });
     return {
-      kind: 'Saved in this page’s private database, so it survives reloads and devices.',
-      save: function (a) { return queue(function () { return col.doc(a.id).set(a); }); },
-      remove: function (id) { return queue(function () { return col.doc(id).delete(); }); }
+      kind: 'Edits save when you leave a cell, in this page’s private database.',
+      save: function (a) { chain = chain.then(function () { return col.doc(a.id).set(a); }).catch(function () { /* next snapshot shows truth */ }); return chain; }
     };
   }
-
   var store = localStore();
-  async function upgradeStore() {
+  (async function () {
     try {
       if (!(window.claude && window.claude.use)) return;
       var db = await window.claude.use('db'), user = await window.claude.use('user');
       var uid = user ? await user.id() : null;
-      if (db && uid) { store = dbStore(db, uid); render_store(); }
+      if (db && uid) { store = dbStore(db, uid); document.getElementById('storeinfo').textContent = store.kind; }
     } catch (e) { /* stay on browser storage */ }
-  }
-  function render_store() { document.getElementById('storeinfo').textContent = store.kind; }
+  })();
 
   // ---------- Tabs ----------
-  var tabs = document.querySelectorAll('.tab');
-  tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      tabs.forEach(function (x) {
-        var on = x === t;
-        x.setAttribute('aria-selected', on ? 'true' : 'false');
-        document.getElementById(x.dataset.tab).hidden = !on;
-      });
+  var tabDefs = [['apps', 'Applications']].concat(data.demo ? [['cv', 'CV Portal']] : []).concat([['dash', 'Dashboard']]);
+  var tabsBox = document.getElementById('tabs');
+  tabDefs.forEach(function (t, i) {
+    var b = el('button', '', t[1]); b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', i === 0 ? 'true' : 'false'); b.dataset.tab = t[0];
+    b.addEventListener('click', function () {
+      tabsBox.querySelectorAll('button').forEach(function (x) { var on = x === b; x.setAttribute('aria-selected', on ? 'true' : 'false'); document.getElementById('tab-' + x.dataset.tab).hidden = !on; });
     });
+    tabsBox.appendChild(b);
   });
+  if (data.demo) document.getElementById('scanbox').hidden = false;
+  else document.getElementById('tab-cv').remove();
 
-  function tile(box, value, label) {
-    var t = el('div', 'tile'); t.appendChild(el('b', '', String(value))); t.appendChild(el('span', '', label)); box.appendChild(t);
-  }
+  // ---------- Applications ----------
+  function opt(sel, value, label, selected) { var o = el('option', '', label); o.value = value; if (selected) o.selected = true; sel.appendChild(o); }
+  statuses.forEach(function (s) { opt(document.getElementById('ast'), s.name, s.name, false); });
 
-  // ---------- Ranked list ----------
-  function rankedTiles() {
-    var tier1 = ranked.filter(function (r) { return r.tier === 1; }).length;
-    var marked = ranked.filter(function (r) { return marks[r.url] === 'apply'; }).length;
-    var box = document.getElementById('tiles'); box.textContent = '';
-    tile(box, ranked.length, 'Postings ranked'); tile(box, tier1, 'At tier 1 companies');
-    tile(box, companies.length, 'Companies in universe'); tile(box, marked, 'Marked to apply');
-  }
-
-  var tierSel = document.getElementById('tier');
-  Array.from(new Set(ranked.map(function (r) { return r.tier; }))).sort().forEach(function (t) {
-    var o = el('option', '', 'Tier ' + t); o.value = String(t); tierSel.appendChild(o);
-  });
-  ['q', 'tier', 'triage'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderRanked); });
-
-  function addFromPosting(r) {
-    if (apps.some(function (a) { return a.url && a.url === r.url; })) return;
-    store.save({ id: newId(), company: r.company, role: r.title, url: r.url || '', status: 'To apply',
-                 applied: '', note: '', history: [] });
-  }
-
-  function renderRanked() {
-    var q = document.getElementById('q').value.toLowerCase();
-    var tier = tierSel.value, tri = document.getElementById('triage').value;
-    var list = document.getElementById('list'); list.textContent = '';
-    var shown = ranked.filter(function (r) {
-      var m = marks[r.url] || 'none';
-      if (tier && String(r.tier) !== tier) return false;
-      if (tri && m !== tri) return false;
-      return !q || (r.company + ' ' + r.title + ' ' + (r.location || '')).toLowerCase().indexOf(q) >= 0;
-    });
-    if (!shown.length) list.appendChild(el('p', 'empty', 'No postings match these filters.'));
-    shown.forEach(function (r) {
-      var m = marks[r.url] || 'none';
-      var card = el('div', 'card' + (m === 'skip' ? ' skip' : ''));
-      var top = el('div', 'row');
-      top.appendChild(el('span', 'co', r.company));
-      top.appendChild(el('span', 'chip t' + r.tier, 'Tier ' + r.tier + ' · score ' + r.score));
-      card.appendChild(top);
-      var href = safeUrl(r.url), role;
-      if (href) { role = el('a', 'role', r.title); role.href = href; role.rel = 'noopener'; role.target = '_blank'; }
-      else role = el('span', 'role', r.title);
-      card.appendChild(role);
-      card.appendChild(el('div', 'meta', [r.location, r.posted_at].filter(Boolean).join(' · ')));
-      var acts = el('div', 'actions');
-      ['apply', 'maybe', 'skip'].forEach(function (k) {
-        var b = el('button', 'btn', k.charAt(0).toUpperCase() + k.slice(1));
-        b.type = 'button'; b.setAttribute('aria-pressed', m === k ? 'true' : 'false');
-        b.addEventListener('click', function () {
-          if (marks[r.url] === k) delete marks[r.url]; else { marks[r.url] = k; if (k === 'apply') addFromPosting(r); }
-          saveMarks(); rankedTiles(); renderRanked();
-        });
-        acts.appendChild(b);
-      });
-      card.appendChild(acts);
-      if (r.reasons && r.reasons.length) {
-        var d = el('details'); d.appendChild(el('summary', '', 'Why this ranked here'));
-        d.appendChild(el('div', '', r.reasons.join('; '))); card.appendChild(d);
-      }
-      list.appendChild(card);
-    });
-  }
-
-  // ---------- Tracker ----------
-  function fillStatusSelect(sel, current) {
-    statuses.forEach(function (s) {
-      var o = el('option', '', s.name); o.value = s.name; if (s.name === current) o.selected = true; sel.appendChild(o);
-    });
-  }
-  fillStatusSelect(document.querySelector('#addform [name=status]'), 'To apply');
-  fillStatusSelect(document.getElementById('tstatus'), '');
-
-  function trackerTiles() {
-    var box = document.getElementById('ttiles'); box.textContent = '';
-    function n(stage) { return apps.filter(function (a) { return stageOf[a.status] === stage; }).length; }
+  function appsKpis() {
+    var box = clear(document.getElementById('a-kpis')), count = function (n) { return apps.filter(function (a) { return a.status === n; }).length; };
     var sent = apps.filter(function (a) { return stageOf[a.status] !== 'planned'; }).length;
-    tile(box, sent, 'Applications sent'); tile(box, n('planned'), 'To apply');
-    tile(box, n('open') + n('won'), 'Active or offer'); tile(box, n('closed'), 'Closed');
+    kpi(box, sent, 'Applications'); kpi(box, count('Rejected'), 'Rejected'); kpi(box, count('OA invited'), 'OA pending'); kpi(box, count('OA done'), 'OA done');
+    document.getElementById('apps-sub').textContent = 'Every application with its posting link. Edit a cell and it saves when you leave it. ' +
+      apps.length + ' rows · ' + apps.filter(function (a) { return !a.url; }).length + ' without a link';
   }
-
-  function changeStatus(a, to) {
-    var next = JSON.parse(JSON.stringify(a));
-    next.history = (next.history || []).concat([{ at: today(), from: a.status, to: to }]);
-    next.status = to;
-    if (!next.applied && stageOf[to] !== 'planned') next.applied = today();
-    store.save(next);
+  function field(a, key, type) {
+    var i = el('input'); i.type = type || 'text'; i.value = a[key] || ''; i.setAttribute('aria-label', key + ' of ' + a.company);
+    i.addEventListener('change', function () { var n = copy(a); n[key] = i.value.trim(); store.save(n); });
+    return i;
   }
-
-  function renderTracker() {
-    var q = document.getElementById('tq').value.toLowerCase(), st = document.getElementById('tstatus').value;
-    var list = document.getElementById('tlist'); list.textContent = '';
+  function renderApps() {
+    var q = document.getElementById('aq').value.toLowerCase(), st = document.getElementById('ast').value, body = clear(document.getElementById('a-body'));
     var order = {}; statuses.forEach(function (s, i) { order[s.name] = i; });
-    var shown = apps.filter(function (a) {
-      if (st && a.status !== st) return false;
-      return !q || (a.company + ' ' + a.role + ' ' + a.status).toLowerCase().indexOf(q) >= 0;
-    }).sort(function (x, y) { return (order[x.status] - order[y.status]) || String(y.applied).localeCompare(String(x.applied)); });
-    if (!shown.length) list.appendChild(el('p', 'empty', apps.length ? 'No applications match these filters.' : 'Nothing tracked yet. Press Apply on a ranked posting, or add one above.'));
-    shown.forEach(function (a) {
-      var card = el('div', 'card' + (stageOf[a.status] === 'closed' ? ' skip' : ''));
-      var top = el('div', 'row'); top.appendChild(el('span', 'co', a.company));
-      var sel = el('select', 'status-sel'); sel.setAttribute('aria-label', 'Status of ' + a.company);
-      fillStatusSelect(sel, a.status);
-      sel.addEventListener('change', function () { changeStatus(a, sel.value); });
-      top.appendChild(sel); card.appendChild(top);
-      var href = safeUrl(a.url), role;
-      if (href) { role = el('a', 'role', a.role); role.href = href; role.rel = 'noopener'; role.target = '_blank'; }
-      else role = el('span', 'role', a.role);
-      card.appendChild(role);
-      card.appendChild(el('div', 'meta', a.applied ? 'Applied ' + a.applied : 'Not sent yet'));
-      var note = el('input', 'note-in'); note.value = a.note || ''; note.placeholder = 'Note'; note.setAttribute('aria-label', 'Note for ' + a.company);
-      note.addEventListener('change', function () { var next = JSON.parse(JSON.stringify(a)); next.note = note.value; store.save(next); });
-      card.appendChild(note);
-      var acts = el('div', 'actions');
-      var del = el('button', 'btn danger', 'Delete'); del.type = 'button';
-      del.addEventListener('click', function () { if (window.confirm('Delete ' + a.company + ' – ' + a.role + '?')) store.remove(a.id); });
-      acts.appendChild(del); card.appendChild(acts);
-      if (a.history && a.history.length) {
-        var d = el('details'); d.appendChild(el('summary', '', 'Status history (' + a.history.length + ')'));
-        d.appendChild(el('div', '', a.history.map(function (h) { return h.at + ': ' + h.from + ' → ' + h.to; }).join('; ')));
-        card.appendChild(d);
-      }
-      list.appendChild(card);
+    var rows = apps.filter(function (a) { return (!st || a.status === st) && (!q || (a.company + ' ' + a.role + ' ' + a.status).toLowerCase().indexOf(q) >= 0); })
+      .sort(function (x, y) { return (order[x.status] - order[y.status]) || String(y.applied).localeCompare(String(x.applied)); });
+    if (!rows.length) { var tr0 = el('tr'), td0 = el('td', 'z', apps.length ? 'No rows match.' : 'No applications yet. Add one below.'); td0.colSpan = 6; tr0.appendChild(td0); body.appendChild(tr0); }
+    rows.forEach(function (a) {
+      var tr = el('tr'), c;
+      c = el('td'); c.appendChild(field(a, 'company')); tr.appendChild(c);
+      c = el('td'); c.appendChild(field(a, 'role')); tr.appendChild(c);
+      c = el('td'); var sel = el('select'); sel.setAttribute('aria-label', 'Status of ' + a.company);
+      statuses.forEach(function (s) { opt(sel, s.name, s.name, s.name === a.status); });
+      sel.addEventListener('change', function () { var n = copy(a); n.status = sel.value; if (!n.applied && stageOf[sel.value] !== 'planned') n.applied = today(); store.save(n); });
+      c.appendChild(sel); tr.appendChild(c);
+      c = el('td', 'dt'); c.appendChild(field(a, 'applied', 'date')); tr.appendChild(c);
+      c = el('td'); c.appendChild(field(a, 'url', 'url')); tr.appendChild(c);
+      c = el('td'); c.appendChild(field(a, 'note')); tr.appendChild(c);
+      body.appendChild(tr);
     });
   }
-
+  ['aq', 'ast'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderApps); });
   document.getElementById('addform').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var f = e.target, status = f.status.value;
-    store.save({ id: newId(), company: f.company.value.trim(), role: f.role.value.trim(), url: f.url.value.trim(),
-                 status: status, applied: stageOf[status] === 'planned' ? '' : today(), note: '', history: [] });
-    f.reset(); f.status.value = 'To apply';
-  });
-  ['tq', 'tstatus'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderTracker); });
-
-  function csvCell(v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
-  document.getElementById('export').addEventListener('click', async function () {
-    var rows = [['company', 'role', 'status', 'applied', 'url', 'note']].concat(apps.map(function (a) {
-      return [a.company, a.role, a.status, a.applied, a.url, a.note]; }));
-    var csv = rows.map(function (r) { return r.map(csvCell).join(','); }).join('\n');
-    try {
-      var dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
-      if (dl) { await dl.save({ filename: 'applications.csv', data: csv }); return; }
-    } catch (e) { /* fall back to a normal download */ }
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'applications.csv';
-    document.body.appendChild(a); a.click(); a.remove();
+    e.preventDefault(); var f = e.target;
+    store.save({ id: newId(), company: f.company.value.trim(), role: f.role.value.trim(), url: f.url.value.trim(), status: 'To apply', applied: '', note: '' });
+    f.reset();
   });
 
-  listeners.push(function () { trackerTiles(); renderTracker(); });
-
-  // ---------- Companies ----------
-  function universe() {
-    var box = document.getElementById('universe');
-    box.appendChild(el('p', 'sub', 'Your employer universe, best tier first. Edit companies.csv to change it.'));
-    var byTier = {};
-    companies.forEach(function (c) { (byTier[c.tier] = byTier[c.tier] || []).push(c); });
-    Object.keys(byTier).sort().forEach(function (t) {
-      var g = el('div', 'grp'); g.appendChild(el('h3', '', 'Tier ' + t));
-      var l = el('div', 'co-list');
-      byTier[t].forEach(function (c) { var p = el('span', 'pill', c.company); p.title = c.bucket || ''; l.appendChild(p); });
-      g.appendChild(l); box.appendChild(g);
+  // ---------- CV Portal (layout demo) ----------
+  (function () {
+    var box = document.getElementById('jds'); if (!box) return;
+    if (!data.jds || !data.jds.length) { box.appendChild(el('div', 'empty', 'No job descriptions queued.')); return; }
+    data.jds.forEach(function (j) {
+      var c = el('div', 'jd'), h = el('div', 'jdhead'); h.appendChild(el('b', '', j.company + ' · ' + j.role)); h.appendChild(el('span', 'p', j.status));
+      c.appendChild(h); c.appendChild(el('div', 'jdfile', j.file));
+      var g = el('div', 'grid2');
+      function fld(label, node, full) { var f = el('div', 'fld' + (full ? ' full' : '')); f.appendChild(el('label', '', label)); f.appendChild(node); g.appendChild(f); }
+      var frame = el('select'); (data.framings || ['Auto (from JD)']).forEach(function (x) { opt(frame, x, x, false); });
+      fld('Target framing', frame);
+      var em = el('input'); em.placeholder = 'you@example.com (default)'; fld('Header email', em);
+      var emph = el('textarea'); emph.placeholder = data.emphasizeHint || 'e.g. lead with the design-systems case study'; fld('Emphasize', emph, true);
+      var down = el('textarea'); down.placeholder = data.downplayHint || 'e.g. cut agency work to one line'; fld('Downplay or cut', down, true);
+      c.appendChild(g);
+      var b = el('button', 'btn pri', 'Save & queue'); b.type = 'button'; b.style.marginTop = '10px';
+      b.addEventListener('click', function () { b.textContent = 'Queued (demo)'; b.disabled = true; });
+      c.appendChild(b); box.appendChild(c);
     });
+  })();
+
+  // ---------- Dashboard ----------
+  var companyOf = {}; companies.forEach(function (c) { companyOf[norm(c.company)] = c; });
+  function bucketOf(name) { var c = companyOf[norm(name)]; return c ? c.bucket || 'other' : 'other'; }
+  function familyOf(title) {
+    var t = title.toLowerCase();
+    for (var i = 0; i < data.families.length; i++) if (data.families[i].words.some(function (w) { return t.indexOf(w.toLowerCase()) >= 0; })) return data.families[i].name;
+    return 'other';
+  }
+  function firmStatus(name) {
+    var mine = apps.filter(function (a) { return norm(a.company) === norm(name); });
+    if (mine.some(function (a) { var s = stageOf[a.status]; return s === 'open' || s === 'won'; })) return 'applied';
+    if (mine.some(function (a) { return a.status === 'Rejected'; })) return 'rejected';
+    return 'not applied';
+  }
+  function whyOf(r) {
+    var seen = [];
+    (r.reasons || []).forEach(function (x) { var m = /^\+[\d.]+ \w+: (.*)$/.exec(x); if (m && seen.indexOf(m[1]) < 0) seen.push(m[1]); });
+    return seen.slice(0, 4).join(', ');
   }
 
-  rankedTiles(); renderRanked(); universe(); trackerTiles(); renderTracker(); render_store();
-  upgradeStore();
+  function dashKpis() {
+    var box = clear(document.getElementById('d-kpis')), count = function (n) { return apps.filter(function (a) { return a.status === n; }).length; };
+    var sent = apps.filter(function (a) { return stageOf[a.status] !== 'planned'; }).length;
+    kpi(box, sent, 'Applications'); kpi(box, count('OA invited'), 'OA pending'); kpi(box, count('OA done'), 'OA done'); kpi(box, count('Rejected'), 'Rejected');
+    kpi(box, ranked.length, 'Postings ranked'); kpi(box, companies.length, 'Firms tracked');
+    document.getElementById('dash-sub').textContent = (data.profile.summary || '') + ' Built from the ranked postings and your applications.';
+  }
+
+  function dashGrid() {
+    var fams = data.families.map(function (f) { return f.name; }).concat(['other']), rows = [], cellN = {}, max = 1;
+    var buckets = data.buckets.slice(); ranked.forEach(function (r) { var b = bucketOf(r.company); if (buckets.indexOf(b) < 0) buckets.push(b); });
+    ranked.forEach(function (r) {
+      var k = bucketOf(r.company) + '|' + familyOf(r.title); cellN[k] = cellN[k] || { n: 0, applied: 0 }; cellN[k].n++;
+      if (firmStatus(r.company) === 'applied') cellN[k].applied++;
+      max = Math.max(max, cellN[k].n);
+    });
+    buckets.forEach(function (b) {
+      var tr = el('tr'), th = el('th', '', b.replace(/_/g, ' ')), tot = 0; tr.appendChild(th);
+      fams.forEach(function (f) {
+        var c = cellN[b + '|' + f], td;
+        if (!c) { td = el('td', 'z', '-'); }
+        else { td = el('td'); td.style.setProperty('--a', (0.15 + 0.75 * c.n / max).toFixed(2)); td.appendChild(el('b', '', String(c.n))); if (c.applied) td.appendChild(el('small', '', c.applied + ' applied')); tot += c.n; }
+        tr.appendChild(td);
+      });
+      tr.appendChild(el('td', 'tot', String(tot))); rows.push(tr);
+    });
+    var box = clear(document.getElementById('d-grid')); box.appendChild(table(['Firm type'].concat(fams, ['Total']), rows));
+  }
+
+  function dashNext() {
+    var byFirm = {};
+    ranked.forEach(function (r) { if (firmStatus(r.company) === 'not applied') (byFirm[r.company] = byFirm[r.company] || []).push(r); });
+    var firms = Object.keys(byFirm).map(function (n) { return { name: n, roles: byFirm[n], score: Math.max.apply(null, byFirm[n].map(function (r) { return r.score; })) }; })
+      .sort(function (a, b) { return b.score - a.score; }).slice(0, 8);
+    var box = clear(document.getElementById('d-next'));
+    if (!firms.length) { box.appendChild(el('div', 'empty', 'Nothing left to submit next.')); return; }
+    var rows = firms.map(function (f, i) {
+      var tr = el('tr'); tr.appendChild(cell(String(i + 1))); var s = el('td'); s.appendChild(el('b', '', String(f.score))); tr.appendChild(s);
+      var fc = el('td'); fc.appendChild(el('b', '', f.name)); fc.appendChild(el('small', '', f.roles.length + (f.roles.length === 1 ? ' role' : ' roles'))); tr.appendChild(fc);
+      var rc = el('td');
+      f.roles.forEach(function (r) {
+        var d = el('div', 'role'); d.appendChild(el('span', '', r.title)); d.appendChild(el('small', '', r.location || ''));
+        d.appendChild(el('span', 'p' + (r.ats ? ' ok' : ''), r.ats || '')); var u = safeUrl(r.url); if (u) d.appendChild(link(u, 'Open')); rc.appendChild(d);
+      });
+      tr.appendChild(rc); tr.appendChild(cell(whyOf(f.roles[0]), 'why')); return tr;
+    });
+    box.appendChild(table(['#', 'Score', 'Firm', 'Roles', 'Why'], rows, 'todo'));
+  }
+
+  function bars(box, items) {
+    clear(box); var max = Math.max.apply(null, items.map(function (i) { return i[1]; }).concat([1]));
+    if (!items.length) { box.appendChild(el('div', 'empty', 'No data yet.')); return; }
+    items.forEach(function (it) {
+      var r = el('div', 'fr'); r.appendChild(el('span', '', it[0])); var b = el('i'); b.style.width = (100 * it[1] / max) + '%'; r.appendChild(b); r.appendChild(el('b', '', String(it[1]))); box.appendChild(r);
+    });
+  }
+  function dashCharts() {
+    bars(document.getElementById('d-funnel'), statuses.map(function (s) { return [s.name, apps.filter(function (a) { return a.status === s.name; }).length]; }));
+    var per = {}; apps.filter(function (a) { return stageOf[a.status] !== 'planned'; }).forEach(function (a) { per[a.company] = (per[a.company] || 0) + 1; });
+    bars(document.getElementById('d-firms'), Object.keys(per).map(function (n) { return [n, per[n]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 8));
+  }
+
+  function dashTable() {
+    var rows = companies.slice().sort(function (a, b) { return a.tier - b.tier || a.company.localeCompare(b.company); }).map(function (c) {
+      var st = firmStatus(c.company), roles = ranked.filter(function (r) { return norm(r.company) === norm(c.company); }), verdict;
+      if (st === 'applied') verdict = 'Applied: wait for reply';
+      else if (st === 'rejected') verdict = 'Cooldown: rejected, 12 months';
+      else verdict = roles.length ? 'Apply: ' + roles.length + (roles.length === 1 ? ' role' : ' roles') : 'No opening: cold email';
+      var tr = el('tr'); tr.appendChild(cell(c.company, 'tot')); tr.appendChild(cell(String(c.tier)));
+      var me = el('td'); me.appendChild(el('span', 'p ' + (st === 'applied' ? 'ok' : st === 'rejected' ? 'rej' : ''), st)); tr.appendChild(me);
+      tr.appendChild(cell(verdict, 'why'));
+      var rc = el('td'); if (roles.length) { rc.appendChild(el('b', '', String(roles.length))); rc.appendChild(el('small', '', roles.map(function (r) { return r.title; }).join(' | '))); } else rc.appendChild(el('span', 'z', 'none found'));
+      tr.appendChild(rc); return tr;
+    });
+    clear(document.getElementById('d-table')).appendChild(table(['Firm', 'Tier', 'Me', 'Verdict', 'Open roles'], rows, 'todo'));
+  }
+
+  function renderAll() { appsKpis(); renderApps(); dashKpis(); dashGrid(); dashNext(); dashCharts(); dashTable(); }
+  listeners.push(renderAll);
+  document.getElementById('storeinfo').textContent = store.kind;
+  renderAll();
 })();
 </script>
 </body>

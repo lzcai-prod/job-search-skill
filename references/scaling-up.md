@@ -1,6 +1,6 @@
 # When to outgrow the page's own storage
 
-The tracker keeps application records in the page's private database (as a Claude artifact) or in the browser. That is enough for roughly a few hundred applications and one person. Move to a real database only when you hit one of these:
+The Applications tab keeps application rows in the page's private database (as a Claude artifact) or in the browser. That is enough for roughly a few hundred applications and one person. Move to a real database only when you hit one of these:
 
 | Symptom | What it means |
 |---|---|

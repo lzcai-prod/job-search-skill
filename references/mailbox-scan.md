@@ -1,6 +1,6 @@
 # Mailbox scan (optional recipe)
 
-Goal: keep the tracker's statuses current by reading recruiting emails, so a rejection or an assessment invite is not missed. This is a **recipe for the user to set up in their own agent or scheduler**; the skill ships no credentials, no scheduler entry and no prompt that runs on its own.
+Goal: keep the Applications tab's statuses current by reading recruiting emails, so a rejection or an assessment invite is not missed. This is a **recipe for the user to set up in their own agent or scheduler**; the skill ships no credentials, no scheduler entry and no prompt that runs on its own.
 
 ## Ground rules
 - **Read-only.** Search and read messages. Never send, reply, forward, delete, archive or label.

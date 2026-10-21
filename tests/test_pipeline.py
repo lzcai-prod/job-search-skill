@@ -49,39 +49,33 @@ def test_candidate_slugs():
     assert find_boards.candidate_slugs("Open AI Labs") == ["openailabs", "open-ai-labs"]
 
 
-def test_render_guide(tmp_path):
-    ranked_path = tmp_path / "ranked.json"
-    ranked_path.write_text(json.dumps(ranked()), encoding="utf-8")
-    out = tmp_path / "guide.html"
-    render_guide.main(str(PROFILE), str(ranked_path), str(out))
-    page = out.read_text(encoding="utf-8")
-    assert "Product Design Intern" in page and "{{" not in page
+def embedded(path):
+    page = path.read_text(encoding="utf-8")
+    return json.loads(page.split('id="data">', 1)[1].split("</script>", 1)[0])
 
 
-def test_demo_banner(tmp_path):
+def render(tmp_path, demo):
     ranked_path = tmp_path / "ranked.json"
     ranked_path.write_text(json.dumps(ranked()), encoding="utf-8")
-    out = tmp_path / "demo.html"
-    render_guide.main(str(PROFILE), str(ranked_path), str(out), demo=True)
+    out = tmp_path / ("demo.html" if demo else "real.html")
+    render_guide.main(str(PROFILE), str(ranked_path), str(out), demo=demo)
+    return out
+
+
+def test_render_guide_real_has_no_sample_rows(tmp_path):
+    data = embedded(render(tmp_path, demo=False))
+    assert data["demo"] is False and data["seedApps"] == [] and data["jds"] == []
+    assert data["statuses"] == STATUSES
+    assert data["families"][0]["name"] == "product design"
+    assert data["buckets"][0] == "design_forward_product"
+
+
+def test_render_guide_demo_has_sample_rows(tmp_path):
+    out = render(tmp_path, demo=True)
     page = out.read_text(encoding="utf-8")
+    data = embedded(out)
     assert "sample data" in page and "{{" not in page
-
-
-def test_tracker_embeds_statuses_and_demo_seed(tmp_path):
-    ranked_path = tmp_path / "ranked.json"
-    ranked_path.write_text(json.dumps(ranked()), encoding="utf-8")
-    seed = ROOT / "examples" / "sample_applications.json"
-    demo, real = tmp_path / "demo.html", tmp_path / "real.html"
-    render_guide.main(str(PROFILE), str(ranked_path), str(demo), demo=True, applications_path=str(seed))
-    render_guide.main(str(PROFILE), str(ranked_path), str(real), applications_path=str(seed))
-
-    def embedded(path):
-        page = path.read_text(encoding="utf-8")
-        return json.loads(page.split('id="data">', 1)[1].split("</script>", 1)[0])
-
-    assert embedded(demo)["statuses"] == STATUSES
-    assert len(embedded(demo)["seedApps"]) == 4
-    assert embedded(real)["seedApps"] == []  # sample rows never leak into a real tracker
+    assert len(data["seedApps"]) == 5 and len(data["jds"]) == 2
 
 
 def test_data_model_lists_every_status():
@@ -89,7 +83,8 @@ def test_data_model_lists_every_status():
     assert all(f"| {s['name']} |" in text for s in STATUSES)
 
 
-def test_sample_applications_use_known_statuses():
+def test_sample_applications_use_known_statuses_and_universe_firms():
     names = {s["name"] for s in STATUSES}
     seed = json.loads((ROOT / "examples" / "sample_applications.json").read_text(encoding="utf-8"))
-    assert all(a["status"] in names for a in seed)
+    firms = {c["company"] for c in load_profile(PROFILE)["companies"]}
+    assert all(a["status"] in names and a["company"] in firms for a in seed)

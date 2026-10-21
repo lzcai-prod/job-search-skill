@@ -18,3 +18,8 @@ default = 5                 # companies not listed in companies.csv land here
 [buckets]
 bucket_a = 1
 bucket_b = 2
+
+# Columns of the dashboard grid: a posting lands in the first family whose words appear in its title.
+[families]
+"<family 1>" = ["<title word>", "<title word>"]
+"<family 2>" = ["<title word>"]

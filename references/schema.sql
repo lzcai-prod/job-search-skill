@@ -1,4 +1,4 @@
--- Starter schema for the optional extensions (SQLite or Postgres). Not required by the tracker page.
+-- Starter schema for the optional extensions (SQLite or Postgres). Not required by the Applications tab.
 -- Every table also carries created_at / updated_at in a real deployment.
 
 CREATE TABLE firm (

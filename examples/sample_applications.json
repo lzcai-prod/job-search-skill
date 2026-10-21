@@ -1,6 +1,52 @@
 [
-  {"id": "demo1", "company": "Northwind Studio", "role": "Product Design Intern", "url": "https://example.com/jobs/n1", "status": "Interview", "applied": "2026-10-02", "note": "Portfolio review done; case study round next week.", "history": [{"at": "2026-10-02", "from": "To apply", "to": "Submitted"}, {"at": "2026-10-09", "from": "Submitted", "to": "Interview"}]},
-  {"id": "demo2", "company": "Lumen Labs", "role": "UX Researcher, Intern", "url": "https://example.com/jobs/l1", "status": "OA done", "applied": "2026-10-05", "note": "Take-home submitted.", "history": [{"at": "2026-10-05", "from": "To apply", "to": "Submitted"}, {"at": "2026-10-10", "from": "Submitted", "to": "OA invited"}, {"at": "2026-10-12", "from": "OA invited", "to": "OA done"}]},
-  {"id": "demo3", "company": "Acme Corp", "role": "UI Designer", "url": "https://example.com/jobs/a1", "status": "Rejected", "applied": "2026-09-28", "note": "Template rejection; reapply next cycle.", "history": [{"at": "2026-09-28", "from": "To apply", "to": "Submitted"}, {"at": "2026-10-08", "from": "Submitted", "to": "Rejected"}]},
-  {"id": "demo4", "company": "Harbor Health", "role": "Associate Product Designer", "url": "https://example.com/jobs/h1", "status": "To apply", "applied": "", "note": "Tailor the portfolio intro first.", "history": []}
+  {
+    "id": "demo1",
+    "company": "Figma",
+    "role": "Product Design Intern",
+    "url": "https://example.com/jobs/f1",
+    "status": "Interview",
+    "applied": "2026-10-02",
+    "note": "Portfolio review done; case study round next week.",
+    "history": []
+  },
+  {
+    "id": "demo2",
+    "company": "Spotify",
+    "role": "UX Researcher, Intern",
+    "url": "https://example.com/jobs/s1",
+    "status": "OA done",
+    "applied": "2026-10-05",
+    "note": "Take-home submitted.",
+    "history": []
+  },
+  {
+    "id": "demo3",
+    "company": "Airbnb",
+    "role": "UI Designer",
+    "url": "",
+    "status": "Rejected",
+    "applied": "2026-09-28",
+    "note": "Template rejection; reapply next cycle.",
+    "history": []
+  },
+  {
+    "id": "demo4",
+    "company": "Canva",
+    "role": "Associate Product Designer",
+    "url": "https://example.com/jobs/c1",
+    "status": "OA invited",
+    "applied": "2026-10-12",
+    "note": "",
+    "history": []
+  },
+  {
+    "id": "demo5",
+    "company": "Webflow",
+    "role": "Visual Designer",
+    "url": "",
+    "status": "Submitted",
+    "applied": "2026-10-14",
+    "note": "",
+    "history": []
+  }
 ]
