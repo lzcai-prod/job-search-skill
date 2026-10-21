@@ -1,6 +1,7 @@
 """Build a single guide.html: the playbook, the user's profile and the ranked list.
 
-Usage: python scripts/render_guide.py profiles/ui-ux out/ranked.json out/guide.html [--open]
+Usage: python scripts/render_guide.py profiles/ui-ux out/ranked.json out/guide.html [--open] [--demo]
+--demo adds a banner saying the page uses sample data (used for the published demo).
 --open launches the page in the default browser (Chrome, Safari, Edge...). On a machine with no
 display, such as a cloud session, it only prints the file path; see SKILL.md for other ways to show it.
 The page is static and local. Nothing is uploaded; it contains the user's own data, so
@@ -76,7 +77,16 @@ def ranked_table(ranked: list[dict]) -> str:
     return f"<table>{head}{''.join(rows)}</table>"
 
 
-def main(profile_dir: str, ranked_path: str, out_path: str, open_browser: bool = False) -> None:
+DEMO_BANNER = (
+    '<p class="note">Demo with <strong>sample data</strong>. '
+    '<a href="https://github.com/lzcai-prod/job-search-skill">Get the skill</a> and ask your AI agent '
+    "to run it on your own search.</p>"
+)
+
+
+def main(
+    profile_dir: str, ranked_path: str, out_path: str, open_browser: bool = False, demo: bool = False
+) -> None:
     profile = load_profile(profile_dir)
     ranked = json.loads(Path(ranked_path).read_text(encoding="utf-8"))
     chapters = sorted((ROOT / "playbook").glob("*.md"))
@@ -93,6 +103,7 @@ def main(profile_dir: str, ranked_path: str, out_path: str, open_browser: bool =
         page.replace("{{PROFILE}}", summary)
         .replace("{{RANKED}}", ranked_table(ranked))
         .replace("{{PLAYBOOK}}", playbook)
+        .replace("{{BANNER}}", DEMO_BANNER if demo else "")
     )
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(page, encoding="utf-8")
@@ -102,7 +113,7 @@ def main(profile_dir: str, ranked_path: str, out_path: str, open_browser: bool =
 
 
 if __name__ == "__main__":
-    args = [a for a in sys.argv[1:] if a != "--open"]
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
     if len(args) != 3:
         sys.exit(__doc__)
-    main(*args, open_browser="--open" in sys.argv)
+    main(*args, open_browser="--open" in sys.argv, demo="--demo" in sys.argv)

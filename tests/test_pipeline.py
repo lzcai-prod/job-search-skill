@@ -56,3 +56,12 @@ def test_render_guide(tmp_path):
     render_guide.main(str(PROFILE), str(ranked_path), str(out))
     page = out.read_text(encoding="utf-8")
     assert "Product Design Intern" in page and "{{" not in page
+
+
+def test_demo_banner(tmp_path):
+    ranked_path = tmp_path / "ranked.json"
+    ranked_path.write_text(json.dumps(ranked()), encoding="utf-8")
+    out = tmp_path / "demo.html"
+    render_guide.main(str(PROFILE), str(ranked_path), str(out), demo=True)
+    page = out.read_text(encoding="utf-8")
+    assert "sample data" in page and "{{" not in page

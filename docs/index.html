@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Search Guide</title>
+<style>
+  :root { --bg:#ffffff; --fg:#1b1f24; --muted:#5b6570; --line:#dfe3e8; --accent:#2b5fd9; --card:#f6f8fa; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --accent:#7aa2ff; --card:#1b1f24; }
+  }
+  :root[data-theme="dark"] { --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --accent:#7aa2ff; --card:#1b1f24; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, sans-serif; }
+  main { max-width:960px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.6rem; } h2 { margin-top:2rem; border-bottom:1px solid var(--line); padding-bottom:.3rem; }
+  a { color:var(--accent); } code { background:var(--card); padding:1px 5px; border-radius:4px; }
+  .note { background:var(--card); border-left:4px solid var(--accent); padding:10px 14px; border-radius:4px; }
+  .scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.92rem; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td.why { color:var(--muted); font-size:.82rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="note">Demo with <strong>sample data</strong>. <a href="https://github.com/lzcai-prod/job-search-skill">Get the skill</a> and ask your AI agent to run it on your own search.</p>
+  <h1>Your job search guide</h1>
+  <p class="note"><strong>You review and submit every application yourself.</strong>
+  This tool finds and ranks; it never submits for you.</p>
+  <h2>Your profile</h2>
+  <p><strong>Goal:</strong> Product design or UX research role at a company with a real design team</p><p><strong>Level:</strong> intern &middot; <strong>Locations:</strong> New York, San Francisco, Remote</p><p>22 companies in your universe.</p>
+  <h2>Ranked list (top-down)</h2>
+  <div class="scroll"><table><tr><th>Tier</th><th>Company</th><th>Role</th><th>Location</th><th>Score</th><th>Why</th></tr><tr><td>1</td><td>Notion</td><td><a href="https://example.com/jobs/2">UX Researcher, Intern</a></td><td>Remote</td><td>25</td><td class='why'>+12 title: ux researcher; +9 title: ux research; +3 title: intern; +1 description: user research</td></tr><tr><td>1</td><td>Figma</td><td><a href="https://example.com/jobs/1">Product Design Intern</a></td><td>New York, NY</td><td>16</td><td class='why'>+9 title: design intern; +3 title: intern; +2 description: design systems; +1 description: figma; +1 description: prototyping</td></tr><tr><td>2</td><td>Duolingo</td><td><a href="https://example.com/jobs/3">Associate Product Designer</a></td><td>San Francisco, CA</td><td>18</td><td class='why'>+12 title: product designer; +3 title: associate; +3 description: interaction design</td></tr><tr><td>5</td><td>Some Startup</td><td><a href="https://example.com/jobs/4">UI Designer</a></td><td>New York</td><td>10</td><td class='why'>+9 title: ui designer; +1 description: figma</td></tr></table></div>
+  <h2>The method</h2>
+  <h2>The approach: top-down</h2>
+<p>Most people search bottom-up: type a job title into a search box and scroll. You get whatever the algorithm shows, it is the same list everyone else sees, and you read hundreds of listings at employers you do not care about.</p>
+<p>Do it top-down instead.</p>
+<ul>
+<li><strong>Start from employers, not listings.</strong> Decide which companies you would be proud to join, in tiers. Then watch their job boards directly.</li>
+<li><strong>Rank before you read.</strong> A cheap keyword score sorts postings first. Spend your attention on the top of the list.</li>
+<li><strong>You review, you submit.</strong> Tools find and rank. You read every posting and press every submit button. This protects you from bad auto-applications and keeps your voice yours.</li>
+<li><strong>Keep a record.</strong> Write down what you applied to and when, so follow-ups and weekly reviews are easy.</li>
+<li><strong>Treat networking as part of the search.</strong> An application plus a short, honest message to a person on the team beats either alone.</li>
+</ul>
+<p><strong>Ask your agent:</strong> &quot;Explain the top-down method back to me, then ask me about my target role and cities.&quot;</p>
+<h2>Build your universe of employers</h2>
+<ol>
+<li><strong>Write your dream list.</strong> 20 to 30 companies you would love to work at. This is your taste, and it is the most valuable input.</li>
+<li><strong>Expand it.</strong> Your agent adds companies from the sources in <code>references/sources.md</code>: job boards, funded-company lists, design or industry awards, alumni lists. Aim for 200 to 300.</li>
+<li><strong>Bucket them.</strong> Buckets are kinds of employer (for example &quot;design-forward product&quot;, &quot;agency&quot;, &quot;startup&quot;). Rank the buckets by how much you want each.</li>
+<li><strong>Tier them.</strong> Score each company 1 to 5 on the things you care about, such as team quality, junior hiring, location, pay and interest in the product. Tier 1 is best. Unlisted companies default to tier 5.</li>
+<li><strong>Prune.</strong> Delete anything you would not accept an offer from. A short honest list beats a long vague one.</li>
+</ol>
+<p><strong>Ask your agent:</strong> &quot;Interview me, then build my profile folder and a first company list. Show it to me before you continue.&quot;</p>
+<h2>Rank and triage</h2>
+<p>The ranked list sorts by <strong>tier first</strong>, then <strong>keyword score</strong>, then <strong>newest</strong>.</p>
+<ul>
+<li>Positive keywords raise a posting&#x27;s score. Title matches count more than description matches.</li>
+<li>Negative keywords lower it, so roles that are obviously off target sink.</li>
+<li>Filters remove postings outside your cities or above your level.</li>
+<li>Every row shows <strong>why</strong> it scored as it did. If a result looks wrong, fix the keywords, not the list.</li>
+</ul>
+<p>Triage the top of the list: open each posting, read it, and mark it *apply*, *maybe* or *skip*. Do not apply to a posting you have not read.</p>
+<p><strong>Ask your agent:</strong> &quot;Rank this week&#x27;s postings and explain the top five. Which keywords should I change?&quot;</p>
+<h2>Apply safely</h2>
+<ul>
+<li><strong>You submit every application.</strong> An agent may help you draft answers, but you read, edit and submit them.</li>
+<li><strong>Never let a tool fill</strong> work-authorization, sponsorship, EEO, disability or criminal-history questions. Answer those yourself, accurately.</li>
+<li><strong>Do not invent experience.</strong> Tailor by choosing and ordering true facts, never by making things up.</li>
+<li><strong>Proofread</strong> everything that goes out. Check names, dates and the company name in every message.</li>
+<li><strong>Do not bypass CAPTCHAs</strong> or log-in walls. If a site blocks automation, apply by hand.</li>
+<li><strong>Log it.</strong> Note the date, role, link and which version of your materials you used.</li>
+</ul>
+<p><strong>Ask your agent:</strong> &quot;Draft an answer to this question using only the facts I gave you, then list anything you were unsure about.&quot;</p>
+<h2>Weekly routine</h2>
+<ol>
+<li><strong>Scan</strong> (10 minutes): re-run fetch and rank. Look only at what is new.</li>
+<li><strong>Triage</strong> (20 minutes): read the top new postings, mark apply, maybe or skip.</li>
+<li><strong>Apply</strong> (as many as you can do well): read, tailor, proofread, submit by hand, log it.</li>
+<li><strong>Reach out</strong> (15 minutes): one short, specific message to someone at a tier 1 or 2 company.</li>
+<li><strong>Follow up</strong>: nudge anything with no reply after about two weeks.</li>
+<li><strong>Adjust</strong>: once a month, prune companies that never produce matches and add new ones.</li>
+</ol>
+<p><strong>Ask your agent:</strong> &quot;Run this week&#x27;s scan and show me only new postings at tier 1 and 2 companies.&quot;</p>
+</main>
+</body>
+</html>

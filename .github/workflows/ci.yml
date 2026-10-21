@@ -11,3 +11,8 @@ jobs:
       - run: pip install pytest ruff
       - run: ruff check .
       - run: pytest -q
+      - name: Demo page is up to date
+        run: |
+          python scripts/rank.py profiles/ui-ux examples/sample_postings.json out/ranked.json
+          python scripts/render_guide.py profiles/ui-ux out/ranked.json docs/index.html --demo
+          git diff --exit-code docs/index.html

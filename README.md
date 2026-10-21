@@ -4,6 +4,8 @@ A method and a few small scripts for a **top-down, safe job search** that your o
 
 **Top-down** means: pick the employers first, watch their public job boards, rank what appears, and review and submit every application yourself. The tool never submits for you.
 
+**[See the live demo](https://lzcai-prod.github.io/job-search-skill/)** (sample data).
+
 ## Try it in 30 seconds (no setup, no network)
 ```
 python scripts/rank.py profiles/ui-ux examples/sample_postings.json out/ranked.json
@@ -23,6 +25,7 @@ Give your agent this folder (for example drop it in its skills directory) and sa
 | `profiles/` | `_template` (blank), `ui-ux` (starter) |
 | `scripts/` | Detect boards, fetch postings, score, rank, render the guide (standard library only) |
 | `examples/` | Fake postings so a fresh clone works immediately |
+| `docs/` | The demo page, rebuilt from the sample data (served by GitHub Pages) |
 
 ## Make your own profile
 Copy `profiles/_template` to `profiles/<your-search>/`, or ask your agent to interview you and fill it in. Profiles you create are git-ignored by default so your details stay local.
