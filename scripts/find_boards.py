@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import UA
+from common import UA, valid_slug
 
 PROBES = {
     "greenhouse": "https://boards-api.greenhouse.io/v1/boards/{slug}",
@@ -30,7 +30,7 @@ def candidate_slugs(name: str, hint: str = "") -> list[str]:
     dashed = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
     seen: list[str] = []
     for s in (hint, plain, dashed):
-        if s and s not in seen:
+        if s and valid_slug(s) and s not in seen:
             seen.append(s)
     return seen
 
