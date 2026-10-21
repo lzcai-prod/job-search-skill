@@ -11,7 +11,7 @@ A method and a few small scripts for a **top-down, safe job search** that your o
 python scripts/rank.py profiles/ui-ux examples/sample_postings.json out/ranked.json
 python scripts/render_guide.py profiles/ui-ux out/ranked.json out/guide.html
 ```
-Open `out/guide.html`: an **Applications** table you edit, and a **Dashboard** with counts, a firm-type by job-family grid, "What to submit next" (with the reason for each score), a funnel and a verdict per firm.
+Open `out/guide.html`: a **Dashboard** with counts, a firm-type by job-family grid, "What to submit next" (with the reason for each score), a funnel and a verdict per firm, and an **Applications** table you edit.
 
 ## Use it with an AI agent
 Give your agent this folder (for example drop it in its skills directory) and say: *"Help me find UI/UX internships in New York using the job-search skill."* The agent reads `SKILL.md`, interviews you, builds your profile, fetches public job boards, ranks the results with reasons, and shows you a guide page. Any agent that reads `AGENTS.md` can follow the same steps.
@@ -28,7 +28,7 @@ Give your agent this folder (for example drop it in its skills directory) and sa
 | `docs/` | The demo page, rebuilt from the sample data (served by GitHub Pages) |
 
 ## About the page
-It is a design demo of one person's own job-search dashboard, rebuilt around sample UI/UX data: three tabs (Applications, CV Portal, Dashboard). You record applications yourself and the Dashboard reads them. Published as a Claude artifact, your rows save to the page's private database; anywhere else they save in your browser only. The CV Portal tab is a layout example: the skill does not include a CV runner or a mailbox scan, and it never submits anything for you.
+It is a design demo of one person's own job-search dashboard, rebuilt around sample UI/UX data: three tabs (Dashboard, Applications, CV Portal). You record applications yourself and the Dashboard reads them. Published as a Claude artifact, your rows save to the page's private database; anywhere else they save in your browser only. The CV Portal tab is a layout example: the skill does not include a CV runner or a mailbox scan, and it never submits anything for you.
 
 ## Make your own profile
 Copy `profiles/_template` to `profiles/<your-search>/`, or ask your agent to interview you and fill it in. Profiles you create are git-ignored by default so your details stay local.

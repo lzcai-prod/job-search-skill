@@ -24,7 +24,7 @@ Give the user a short orientation (3 to 5 lines: top-down universe, rank before 
 3. In a cloud or remote session (no display, so nothing can open on their screen), attach `out/guide.html` as a file for them to download and open in Chrome, or publish it as a page if you can.
 4. Last resort: print the ranked list as a markdown table and save `GUIDE.md`.
 
-The page has two working tabs: **Applications** (an editable table, status filter, counts) and **Dashboard** (counts, a firm-type by job-family grid, "What to submit next" with the reason for each score, a funnel, and a verdict per firm). The demo adds a third, **CV Portal**, which is a layout example only.
+The page has two working tabs: **Dashboard**, shown first (counts, a firm-type by job-family grid, "What to submit next" with the reason for each score, a funnel, and a verdict per firm), and **Applications** (an editable table, status filter, counts). The demo adds a third, **CV Portal**, which is a layout example only.
 
 ## Workflow
 1. **Interview** the user: role family, level (intern, entry, mid), cities, whether they need visa sponsorship, 20 to 30 dream employers. Write `profiles/<name>/` from `profiles/_template/` (see `references/scoring.md`). Confirm the keywords and tiers with them before continuing.

@@ -73,7 +73,7 @@ table.ed td.dt input{min-width:130px}
   {{BANNER}}
   <div class="tabs" role="tablist" id="tabs"></div>
 
-  <section id="tab-apps">
+  <section id="tab-apps" hidden>
     <h1>Applications</h1>
     <div class="sub" id="apps-sub"></div>
     <div id="scanbox" hidden>
@@ -97,7 +97,7 @@ table.ed td.dt input{min-width:130px}
     <div id="jds"></div>
   </section>
 
-  <section id="tab-dash" hidden>
+  <section id="tab-dash">
     <h1>Dashboard</h1>
     <div class="sub" id="dash-sub"></div>
     <div class="kpis" id="d-kpis"></div>
@@ -172,7 +172,7 @@ table.ed td.dt input{min-width:130px}
   })();
 
   // ---------- Tabs ----------
-  var tabDefs = [['apps', 'Applications']].concat(data.demo ? [['cv', 'CV Portal']] : []).concat([['dash', 'Dashboard']]);
+  var tabDefs = [['dash', 'Dashboard'], ['apps', 'Applications']].concat(data.demo ? [['cv', 'CV Portal']] : []);
   var tabsBox = document.getElementById('tabs');
   tabDefs.forEach(function (t, i) {
     var b = el('button', '', t[1]); b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', i === 0 ? 'true' : 'false'); b.dataset.tab = t[0];
