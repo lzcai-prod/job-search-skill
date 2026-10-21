@@ -5,34 +5,216 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Job Search Guide</title>
 <style>
-  :root { --bg:#ffffff; --fg:#1b1f24; --muted:#5b6570; --line:#dfe3e8; --accent:#2b5fd9; --card:#f6f8fa; }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --accent:#7aa2ff; --card:#1b1f24; }
+  :root {
+    --bg:#ffffff; --fg:#1b1f24; --muted:#5b6570; --line:#dfe3e8; --card:#f6f8fa;
+    --accent:#2b5fd9; --accent-fg:#ffffff; --good:#1a7f4b; --warn:#9a6700; --bad:#b42318;
   }
-  :root[data-theme="dark"] { --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --accent:#7aa2ff; --card:#1b1f24; }
-  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, sans-serif; }
-  main { max-width:960px; margin:0 auto; padding:24px 16px 64px; }
-  h1 { font-size:1.6rem; } h2 { margin-top:2rem; border-bottom:1px solid var(--line); padding-bottom:.3rem; }
-  a { color:var(--accent); } code { background:var(--card); padding:1px 5px; border-radius:4px; }
-  .note { background:var(--card); border-left:4px solid var(--accent); padding:10px 14px; border-radius:4px; }
-  .scroll { overflow-x:auto; }
-  table { border-collapse:collapse; width:100%; font-size:.92rem; }
-  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
-  td.why { color:var(--muted); font-size:.82rem; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --card:#1b1f24;
+      --accent:#7aa2ff; --accent-fg:#0d1117; --good:#56d364; --warn:#e3b341; --bad:#ff8b81;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --card:#1b1f24;
+    --accent:#7aa2ff; --accent-fg:#0d1117; --good:#56d364; --warn:#e3b341; --bad:#ff8b81;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, sans-serif; }
+  main { max-width:920px; margin:0 auto; padding:16px 16px 64px; }
+  h1 { font-size:1.6rem; margin:.4rem 0 .2rem; }
+  h2 { font-size:1.2rem; margin:1.6rem 0 .4rem; }
+  h3 { font-size:1.05rem; }
+  a { color:var(--accent); }
+  code { background:var(--card); padding:1px 5px; border-radius:4px; }
+  .sub { color:var(--muted); margin:0 0 12px; }
+  .note { background:var(--card); border-left:4px solid var(--accent); padding:10px 14px; border-radius:6px; margin:10px 0; }
+  .tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin:14px 0 16px; overflow-x:auto; }
+  .tab { appearance:none; background:none; border:0; color:var(--muted); font:inherit; font-weight:600;
+         padding:10px 14px; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
+  .tab[aria-selected="true"] { color:var(--fg); border-bottom-color:var(--accent); }
+  .tiles { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin:0 0 14px; }
+  @media (min-width:640px) { .tiles { grid-template-columns:repeat(4, 1fr); } }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .tile b { display:block; font-size:1.8rem; line-height:1.1; }
+  .tile span { color:var(--muted); font-size:.85rem; }
+  .controls { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
+  .controls input, .controls select {
+    font:inherit; color:var(--fg); background:var(--card); border:1px solid var(--line);
+    border-radius:8px; padding:9px 10px; min-width:0; }
+  .controls input { flex:1 1 200px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:0 0 10px; }
+  .card.skip { opacity:.55; }
+  .row { display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .co { font-weight:700; }
+  .chip { display:inline-block; font-size:.75rem; font-weight:700; padding:2px 8px; border-radius:99px;
+          border:1px solid var(--line); color:var(--muted); }
+  .chip.t1 { color:var(--good); border-color:var(--good); }
+  .chip.t2 { color:var(--accent); border-color:var(--accent); }
+  .role { display:block; margin:2px 0; font-weight:600; overflow-wrap:anywhere; }
+  .meta { color:var(--muted); font-size:.88rem; }
+  .actions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .btn { appearance:none; font:inherit; font-size:.85rem; font-weight:600; color:var(--fg); background:none;
+         border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer; }
+  .btn[aria-pressed="true"] { background:var(--accent); color:var(--accent-fg); border-color:var(--accent); }
+  details { margin-top:8px; color:var(--muted); font-size:.85rem; }
+  summary { cursor:pointer; }
+  .empty { color:var(--muted); padding:20px 0; text-align:center; }
+  .grp { margin:0 0 18px; }
+  .grp h3 { margin:0 0 6px; }
+  .co-list { display:flex; flex-wrap:wrap; gap:6px; }
+  .pill { background:var(--card); border:1px solid var(--line); border-radius:99px; padding:4px 12px; font-size:.9rem; }
+  [hidden] { display:none !important; }
 </style>
 </head>
 <body>
 <main>
   {{BANNER}}
-  <h1>Your job search guide</h1>
-  <p class="note"><strong>You review and submit every application yourself.</strong>
-  This tool finds and ranks; it never submits for you.</p>
-  <h2>Your profile</h2>
-  {{PROFILE}}
-  <h2>Ranked list (top-down)</h2>
-  <div class="scroll">{{RANKED}}</div>
-  <h2>The method</h2>
-  {{PLAYBOOK}}
+  <h1>Your job search</h1>
+  <p class="sub">{{PROFILE}}</p>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-ranked" aria-selected="true" data-tab="ranked">Ranked list</button>
+    <button class="tab" role="tab" id="tab-universe" aria-selected="false" data-tab="universe">Companies</button>
+    <button class="tab" role="tab" id="tab-method" aria-selected="false" data-tab="method">Method</button>
+  </div>
+
+  <section id="ranked">
+    <div class="tiles" id="tiles"></div>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Filter by company, role or location" aria-label="Filter">
+      <select id="tier" aria-label="Tier"><option value="">All tiers</option></select>
+      <select id="triage" aria-label="Status">
+        <option value="">All statuses</option>
+        <option value="none">Not triaged</option>
+        <option value="apply">Apply</option>
+        <option value="maybe">Maybe</option>
+        <option value="skip">Skip</option>
+      </select>
+    </div>
+    <p class="note"><strong>You review and submit every application yourself.</strong>
+    Mark each posting Apply, Maybe or Skip after reading it. Your marks stay in this browser only.</p>
+    <div id="list"></div>
+  </section>
+
+  <section id="universe" hidden></section>
+
+  <section id="method" hidden>
+    {{PLAYBOOK}}
+  </section>
 </main>
+
+<script type="application/json" id="data">{{DATA}}</script>
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById('data').textContent);
+  var ranked = data.ranked, companies = data.companies;
+  var KEY = 'job-search-triage:' + (data.profile.name || '');
+  var marks = {};
+  try { marks = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { marks = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch (e) { /* storage unavailable */ } }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+  function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : ''; }
+
+  // Tabs
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (x) {
+        var on = x === t;
+        x.setAttribute('aria-selected', on ? 'true' : 'false');
+        document.getElementById(x.dataset.tab).hidden = !on;
+      });
+    });
+  });
+
+  // Stat tiles
+  function tiles() {
+    var applied = ranked.filter(function (r) { return marks[r.url] === 'apply'; }).length;
+    var tier1 = ranked.filter(function (r) { return r.tier === 1; }).length;
+    var box = document.getElementById('tiles');
+    box.textContent = '';
+    [[ranked.length, 'Postings ranked'], [tier1, 'At tier 1 companies'],
+     [companies.length, 'Companies in universe'], [applied, 'Marked to apply']].forEach(function (s) {
+      var t = el('div', 'tile'); t.appendChild(el('b', '', String(s[0]))); t.appendChild(el('span', '', s[1]));
+      box.appendChild(t);
+    });
+  }
+
+  // Filters
+  var tierSel = document.getElementById('tier');
+  Array.from(new Set(ranked.map(function (r) { return r.tier; }))).sort().forEach(function (t) {
+    var o = el('option', '', 'Tier ' + t); o.value = String(t); tierSel.appendChild(o);
+  });
+  ['q', 'tier', 'triage'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', render);
+  });
+
+  function render() {
+    var q = document.getElementById('q').value.toLowerCase();
+    var tier = tierSel.value, tri = document.getElementById('triage').value;
+    var list = document.getElementById('list');
+    list.textContent = '';
+    var shown = ranked.filter(function (r) {
+      var m = marks[r.url] || 'none';
+      if (tier && String(r.tier) !== tier) return false;
+      if (tri && m !== tri) return false;
+      return !q || (r.company + ' ' + r.title + ' ' + (r.location || '')).toLowerCase().indexOf(q) >= 0;
+    });
+    if (!shown.length) { list.appendChild(el('p', 'empty', 'No postings match these filters.')); }
+    shown.forEach(function (r) {
+      var m = marks[r.url] || 'none';
+      var card = el('div', 'card' + (m === 'skip' ? ' skip' : ''));
+      var top = el('div', 'row');
+      top.appendChild(el('span', 'co', r.company));
+      top.appendChild(el('span', 'chip t' + r.tier, 'Tier ' + r.tier + ' · score ' + r.score));
+      card.appendChild(top);
+      var href = safeUrl(r.url), role;
+      if (href) { role = el('a', 'role', r.title); role.href = href; role.rel = 'noopener'; role.target = '_blank'; }
+      else { role = el('span', 'role', r.title); }
+      card.appendChild(role);
+      card.appendChild(el('div', 'meta', [r.location, r.posted_at].filter(Boolean).join(' · ')));
+      var acts = el('div', 'actions');
+      ['apply', 'maybe', 'skip'].forEach(function (k) {
+        var b = el('button', 'btn', k.charAt(0).toUpperCase() + k.slice(1));
+        b.type = 'button'; b.setAttribute('aria-pressed', m === k ? 'true' : 'false');
+        b.addEventListener('click', function () {
+          if (marks[r.url] === k) delete marks[r.url]; else marks[r.url] = k;
+          save(); tiles(); render();
+        });
+        acts.appendChild(b);
+      });
+      card.appendChild(acts);
+      if (r.reasons && r.reasons.length) {
+        var d = el('details'); d.appendChild(el('summary', '', 'Why this ranked here'));
+        d.appendChild(el('div', '', r.reasons.join('; '))); card.appendChild(d);
+      }
+      list.appendChild(card);
+    });
+  }
+
+  // Companies tab, grouped by tier
+  function universe() {
+    var box = document.getElementById('universe');
+    box.appendChild(el('p', 'sub', 'Your employer universe, best tier first. Edit companies.csv to change it.'));
+    var byTier = {};
+    companies.forEach(function (c) { (byTier[c.tier] = byTier[c.tier] || []).push(c); });
+    Object.keys(byTier).sort().forEach(function (t) {
+      var g = el('div', 'grp'); g.appendChild(el('h3', '', 'Tier ' + t));
+      var l = el('div', 'co-list');
+      byTier[t].forEach(function (c) { var p = el('span', 'pill', c.company); p.title = c.bucket || ''; l.appendChild(p); });
+      g.appendChild(l); box.appendChild(g);
+    });
+  }
+
+  tiles(); render(); universe();
+})();
+</script>
 </body>
 </html>

@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).parent))
-from common import load_profile
+from common import load_profile, tier_of
 
 
 def md_to_html(md: str) -> str:
@@ -60,23 +60,6 @@ def md_to_html(md: str) -> str:
     return "\n".join(out)
 
 
-def ranked_table(ranked: list[dict]) -> str:
-    if not ranked:
-        return "<p>No postings matched yet. Check your keywords or add companies.</p>"
-    rows = []
-    for r in ranked:
-        why = html.escape("; ".join(r.get("reasons", [])))
-        link = html.escape(r.get("url", ""))
-        rows.append(
-            f"<tr><td>{r['tier']}</td><td>{html.escape(r['company'])}</td>"
-            f'<td><a href="{link}">{html.escape(r["title"])}</a></td>'
-            f"<td>{html.escape(r.get('location', ''))}</td><td>{r['score']:g}</td>"
-            f"<td class='why'>{why}</td></tr>"
-        )
-    head = "<tr><th>Tier</th><th>Company</th><th>Role</th><th>Location</th><th>Score</th><th>Why</th></tr>"
-    return f"<table>{head}{''.join(rows)}</table>"
-
-
 DEMO_BANNER = (
     '<p class="note">Demo with <strong>sample data</strong>. '
     '<a href="https://github.com/lzcai-prod/job-search-skill">Get the skill</a> and ask your AI agent '
@@ -92,18 +75,24 @@ def main(
     chapters = sorted((ROOT / "playbook").glob("*.md"))
     playbook = "\n".join(md_to_html(c.read_text(encoding="utf-8")) for c in chapters)
     goal = profile.get("goal", {})
-    summary = (
-        f"<p><strong>Goal:</strong> {html.escape(goal.get('summary', ''))}</p>"
-        f"<p><strong>Level:</strong> {html.escape(goal.get('level', ''))} &middot; "
-        f"<strong>Locations:</strong> {html.escape(', '.join(goal.get('locations', [])) or 'any')}</p>"
-        f"<p>{len(profile['companies'])} companies in your universe.</p>"
-    )
+    places = ", ".join(goal.get("locations", [])) or "any location"
+    summary = html.escape(f"{goal.get('summary', '')} ({goal.get('level', '')}; {places})")
+    data = {
+        "ranked": ranked,
+        "companies": [
+            {"company": c["company"], "bucket": c.get("bucket", ""), "tier": tier_of(profile, c["company"])}
+            for c in profile["companies"]
+        ],
+        "profile": {"name": Path(profile_dir).name},
+    }
+    # keep "</script>" out of the embedded JSON
+    blob = json.dumps(data).replace("</", "<\\/")
     page = (ROOT / "templates" / "guide.html").read_text(encoding="utf-8")
     page = (
         page.replace("{{PROFILE}}", summary)
-        .replace("{{RANKED}}", ranked_table(ranked))
         .replace("{{PLAYBOOK}}", playbook)
         .replace("{{BANNER}}", DEMO_BANNER if demo else "")
+        .replace("{{DATA}}", blob)
     )
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(page, encoding="utf-8")
