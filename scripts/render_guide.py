@@ -1,7 +1,7 @@
 """Build a single guide.html: the playbook, the user's profile and the ranked list.
 
-Usage: python scripts/render_guide.py profiles/ui-ux out/ranked.json out/guide.html [--open] [--demo]
---demo adds a banner saying the page uses sample data (used for the published demo).
+Usage: python scripts/render_guide.py profiles/ui-ux out/ranked.json out/guide.html [--open] [--demo] [--applications=sample.json]
+--demo adds a banner and, with --applications=<json>, sample tracker rows (used for the published demo).
 --open launches the page in the default browser (Chrome, Safari, Edge...). On a machine with no
 display, such as a cloud session, it only prints the file path; see SKILL.md for other ways to show it.
 The page is static and local. Nothing is uploaded; it contains the user's own data, so
@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).parent))
-from common import load_profile, tier_of
+from common import STATUSES, load_profile, tier_of
 
 
 def md_to_html(md: str) -> str:
@@ -68,7 +68,12 @@ DEMO_BANNER = (
 
 
 def main(
-    profile_dir: str, ranked_path: str, out_path: str, open_browser: bool = False, demo: bool = False
+    profile_dir: str,
+    ranked_path: str,
+    out_path: str,
+    open_browser: bool = False,
+    demo: bool = False,
+    applications_path: str | None = None,
 ) -> None:
     profile = load_profile(profile_dir)
     ranked = json.loads(Path(ranked_path).read_text(encoding="utf-8"))
@@ -84,6 +89,10 @@ def main(
             for c in profile["companies"]
         ],
         "profile": {"name": Path(profile_dir).name},
+        "statuses": STATUSES,
+        "demo": demo,
+        # sample applications are only shown in the demo; a real tracker starts empty
+        "seedApps": json.loads(Path(applications_path).read_text(encoding="utf-8")) if demo and applications_path else [],
     }
     # keep "</script>" out of the embedded JSON
     blob = json.dumps(data).replace("</", "<\\/")
@@ -105,4 +114,5 @@ if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     if len(args) != 3:
         sys.exit(__doc__)
-    main(*args, open_browser="--open" in sys.argv, demo="--demo" in sys.argv)
+    apps = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--applications=")), None)
+    main(*args, open_browser="--open" in sys.argv, demo="--demo" in sys.argv, applications_path=apps)

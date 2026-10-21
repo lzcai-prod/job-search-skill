@@ -9,7 +9,7 @@ import fetch_board
 import find_boards
 import rank
 import render_guide
-from common import load_profile, tier_of
+from common import STATUSES, load_profile, tier_of
 
 PROFILE = ROOT / "profiles" / "ui-ux"
 SAMPLE = ROOT / "examples" / "sample_postings.json"
@@ -65,3 +65,31 @@ def test_demo_banner(tmp_path):
     render_guide.main(str(PROFILE), str(ranked_path), str(out), demo=True)
     page = out.read_text(encoding="utf-8")
     assert "sample data" in page and "{{" not in page
+
+
+def test_tracker_embeds_statuses_and_demo_seed(tmp_path):
+    ranked_path = tmp_path / "ranked.json"
+    ranked_path.write_text(json.dumps(ranked()), encoding="utf-8")
+    seed = ROOT / "examples" / "sample_applications.json"
+    demo, real = tmp_path / "demo.html", tmp_path / "real.html"
+    render_guide.main(str(PROFILE), str(ranked_path), str(demo), demo=True, applications_path=str(seed))
+    render_guide.main(str(PROFILE), str(ranked_path), str(real), applications_path=str(seed))
+
+    def embedded(path):
+        page = path.read_text(encoding="utf-8")
+        return json.loads(page.split('id="data">', 1)[1].split("</script>", 1)[0])
+
+    assert embedded(demo)["statuses"] == STATUSES
+    assert len(embedded(demo)["seedApps"]) == 4
+    assert embedded(real)["seedApps"] == []  # sample rows never leak into a real tracker
+
+
+def test_data_model_lists_every_status():
+    text = (ROOT / "references" / "data-model.md").read_text(encoding="utf-8")
+    assert all(f"| {s['name']} |" in text for s in STATUSES)
+
+
+def test_sample_applications_use_known_statuses():
+    names = {s["name"] for s in STATUSES}
+    seed = json.loads((ROOT / "examples" / "sample_applications.json").read_text(encoding="utf-8"))
+    assert all(a["status"] in names for a in seed)

@@ -31,7 +31,7 @@
   .note { background:var(--card); border-left:4px solid var(--accent); padding:10px 14px; border-radius:6px; margin:10px 0; }
   .tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin:14px 0 16px; overflow-x:auto; }
   .tab { appearance:none; background:none; border:0; color:var(--muted); font:inherit; font-weight:600;
-         padding:10px 14px; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
+         padding:10px 10px; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
   .tab[aria-selected="true"] { color:var(--fg); border-bottom-color:var(--accent); }
   .tiles { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin:0 0 14px; }
   @media (min-width:640px) { .tiles { grid-template-columns:repeat(4, 1fr); } }
@@ -64,6 +64,19 @@
   .grp h3 { margin:0 0 6px; }
   .co-list { display:flex; flex-wrap:wrap; gap:6px; }
   .pill { background:var(--card); border:1px solid var(--line); border-radius:99px; padding:4px 12px; font-size:.9rem; }
+  .card input.note-in { width:100%; margin-top:8px; font:inherit; font-size:.9rem; color:var(--fg);
+         background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:6px 8px; }
+  .status-sel { font:inherit; font-size:.85rem; font-weight:600; color:var(--fg); background:var(--bg);
+         border:1px solid var(--line); border-radius:8px; padding:4px 6px; }
+  .add { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin:0 0 12px; }
+  .add summary { font-weight:600; color:var(--fg); }
+  .add form { display:grid; grid-template-columns:1fr; gap:8px; margin-top:10px; }
+  @media (min-width:640px) { .add form { grid-template-columns:1fr 1fr; } .add form .wide { grid-column:1 / -1; } }
+  .add input, .add select { font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--line);
+         border-radius:8px; padding:9px 10px; min-width:0; width:100%; }
+  .btn.primary { background:var(--accent); color:var(--accent-fg); border-color:var(--accent); }
+  .btn.danger { color:var(--bad); }
+  .store { color:var(--muted); font-size:.8rem; margin:6px 0 0; }
   [hidden] { display:none !important; }
 </style>
 </head>
@@ -75,6 +88,7 @@
 
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" id="tab-ranked" aria-selected="true" data-tab="ranked">Ranked list</button>
+    <button class="tab" role="tab" id="tab-tracker" aria-selected="false" data-tab="tracker">Tracker</button>
     <button class="tab" role="tab" id="tab-universe" aria-selected="false" data-tab="universe">Companies</button>
     <button class="tab" role="tab" id="tab-method" aria-selected="false" data-tab="method">Method</button>
   </div>
@@ -97,6 +111,27 @@
     <div id="list"></div>
   </section>
 
+  <section id="tracker" hidden>
+    <div class="tiles" id="ttiles"></div>
+    <details class="add">
+      <summary>Add an application</summary>
+      <form id="addform">
+        <input name="company" placeholder="Company" required aria-label="Company">
+        <input name="role" placeholder="Role" required aria-label="Role">
+        <input name="url" type="url" placeholder="Link to the posting (optional)" aria-label="Link">
+        <select name="status" aria-label="Status"></select>
+        <button class="btn primary wide" type="submit">Add</button>
+      </form>
+    </details>
+    <div class="controls">
+      <input id="tq" type="search" placeholder="Filter by company, role or status" aria-label="Filter applications">
+      <select id="tstatus" aria-label="Status filter"><option value="">All statuses</option></select>
+      <button class="btn" id="export" type="button">Export CSV</button>
+    </div>
+    <div id="tlist"></div>
+    <p class="store" id="storeinfo"></p>
+  </section>
+
   <section id="universe" hidden></section>
 
   <section id="method" hidden>
@@ -108,11 +143,13 @@
 <script>
 (function () {
   var data = JSON.parse(document.getElementById('data').textContent);
-  var ranked = data.ranked, companies = data.companies;
-  var KEY = 'job-search-triage:' + (data.profile.name || '');
+  var ranked = data.ranked, companies = data.companies, statuses = data.statuses;
+  var stageOf = {}; statuses.forEach(function (s) { stageOf[s.name] = s.stage; });
+  var NS = data.profile.name || 'default';
+  var MARKS_KEY = 'job-search-triage:' + NS;
   var marks = {};
-  try { marks = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { marks = {}; }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch (e) { /* storage unavailable */ } }
+  try { marks = JSON.parse(localStorage.getItem(MARKS_KEY) || '{}'); } catch (e) { marks = {}; }
+  function saveMarks() { try { localStorage.setItem(MARKS_KEY, JSON.stringify(marks)); } catch (e) { /* storage unavailable */ } }
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -121,8 +158,65 @@
     return n;
   }
   function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : ''; }
+  function today() { return new Date().toISOString().slice(0, 10); }
+  function newId() { return 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
-  // Tabs
+  // ---------- Application store: private artifact database, else this browser ----------
+  var apps = [];
+  var listeners = [];
+  function notify() { listeners.forEach(function (f) { f(); }); }
+
+  function localStore() {
+    var KEY = 'job-search-apps:' + NS, SEEDED = KEY + ':seeded';
+    var items = [];
+    try { items = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { items = null; }
+    if (!items) {
+      var seeded = false;
+      try { seeded = localStorage.getItem(SEEDED) === '1'; } catch (e) { seeded = false; }
+      items = (data.demo && !seeded && data.seedApps) ? data.seedApps.slice() : [];
+    }
+    function persist() {
+      try { localStorage.setItem(KEY, JSON.stringify(items)); localStorage.setItem(SEEDED, '1'); } catch (e) { /* storage unavailable */ }
+      apps = items.slice(); notify();
+    }
+    apps = items.slice();
+    return {
+      kind: 'This browser only. Clear site data and it is gone; use Export CSV to keep a copy.',
+      save: function (a) {
+        var i = items.findIndex(function (x) { return x.id === a.id; });
+        if (i >= 0) items[i] = a; else items.push(a);
+        persist(); return Promise.resolve();
+      },
+      remove: function (id) { items = items.filter(function (x) { return x.id !== id; }); persist(); return Promise.resolve(); }
+    };
+  }
+
+  function dbStore(db, uid) {
+    var col = db.collection('data/users/' + uid);   // private to this viewer, even from the owner
+    var chain = Promise.resolve();
+    function queue(fn) { chain = chain.then(fn).catch(function () { /* surfaced by the next snapshot */ }); return chain; }
+    col.onSnapshot(function (snap) {
+      apps = snap.docs.map(function (d) { return d.data(); }); notify();
+    }, function () { /* terminal: keep what is on screen */ });
+    return {
+      kind: 'Saved in this page’s private database, so it survives reloads and devices.',
+      save: function (a) { return queue(function () { return col.doc(a.id).set(a); }); },
+      remove: function (id) { return queue(function () { return col.doc(id).delete(); }); }
+    };
+  }
+
+  var store = localStore();
+  async function upgradeStore() {
+    try {
+      if (!(window.claude && window.claude.use)) return;
+      var db = await window.claude.use('db'), user = await window.claude.use('user');
+      var uid = user ? await user.id() : null;
+      if (db && uid) { store = dbStore(db, uid); render_store(); }
+    } catch (e) { /* stay on browser storage */ }
+  }
+  function render_store() { document.getElementById('storeinfo').textContent = store.kind; }
+
+  // ---------- Tabs ----------
   var tabs = document.querySelectorAll('.tab');
   tabs.forEach(function (t) {
     t.addEventListener('click', function () {
@@ -134,40 +228,42 @@
     });
   });
 
-  // Stat tiles
-  function tiles() {
-    var applied = ranked.filter(function (r) { return marks[r.url] === 'apply'; }).length;
-    var tier1 = ranked.filter(function (r) { return r.tier === 1; }).length;
-    var box = document.getElementById('tiles');
-    box.textContent = '';
-    [[ranked.length, 'Postings ranked'], [tier1, 'At tier 1 companies'],
-     [companies.length, 'Companies in universe'], [applied, 'Marked to apply']].forEach(function (s) {
-      var t = el('div', 'tile'); t.appendChild(el('b', '', String(s[0]))); t.appendChild(el('span', '', s[1]));
-      box.appendChild(t);
-    });
+  function tile(box, value, label) {
+    var t = el('div', 'tile'); t.appendChild(el('b', '', String(value))); t.appendChild(el('span', '', label)); box.appendChild(t);
   }
 
-  // Filters
+  // ---------- Ranked list ----------
+  function rankedTiles() {
+    var tier1 = ranked.filter(function (r) { return r.tier === 1; }).length;
+    var marked = ranked.filter(function (r) { return marks[r.url] === 'apply'; }).length;
+    var box = document.getElementById('tiles'); box.textContent = '';
+    tile(box, ranked.length, 'Postings ranked'); tile(box, tier1, 'At tier 1 companies');
+    tile(box, companies.length, 'Companies in universe'); tile(box, marked, 'Marked to apply');
+  }
+
   var tierSel = document.getElementById('tier');
   Array.from(new Set(ranked.map(function (r) { return r.tier; }))).sort().forEach(function (t) {
     var o = el('option', '', 'Tier ' + t); o.value = String(t); tierSel.appendChild(o);
   });
-  ['q', 'tier', 'triage'].forEach(function (id) {
-    document.getElementById(id).addEventListener('input', render);
-  });
+  ['q', 'tier', 'triage'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderRanked); });
 
-  function render() {
+  function addFromPosting(r) {
+    if (apps.some(function (a) { return a.url && a.url === r.url; })) return;
+    store.save({ id: newId(), company: r.company, role: r.title, url: r.url || '', status: 'To apply',
+                 applied: '', note: '', history: [] });
+  }
+
+  function renderRanked() {
     var q = document.getElementById('q').value.toLowerCase();
     var tier = tierSel.value, tri = document.getElementById('triage').value;
-    var list = document.getElementById('list');
-    list.textContent = '';
+    var list = document.getElementById('list'); list.textContent = '';
     var shown = ranked.filter(function (r) {
       var m = marks[r.url] || 'none';
       if (tier && String(r.tier) !== tier) return false;
       if (tri && m !== tri) return false;
       return !q || (r.company + ' ' + r.title + ' ' + (r.location || '')).toLowerCase().indexOf(q) >= 0;
     });
-    if (!shown.length) { list.appendChild(el('p', 'empty', 'No postings match these filters.')); }
+    if (!shown.length) list.appendChild(el('p', 'empty', 'No postings match these filters.'));
     shown.forEach(function (r) {
       var m = marks[r.url] || 'none';
       var card = el('div', 'card' + (m === 'skip' ? ' skip' : ''));
@@ -177,7 +273,7 @@
       card.appendChild(top);
       var href = safeUrl(r.url), role;
       if (href) { role = el('a', 'role', r.title); role.href = href; role.rel = 'noopener'; role.target = '_blank'; }
-      else { role = el('span', 'role', r.title); }
+      else role = el('span', 'role', r.title);
       card.appendChild(role);
       card.appendChild(el('div', 'meta', [r.location, r.posted_at].filter(Boolean).join(' · ')));
       var acts = el('div', 'actions');
@@ -185,8 +281,8 @@
         var b = el('button', 'btn', k.charAt(0).toUpperCase() + k.slice(1));
         b.type = 'button'; b.setAttribute('aria-pressed', m === k ? 'true' : 'false');
         b.addEventListener('click', function () {
-          if (marks[r.url] === k) delete marks[r.url]; else marks[r.url] = k;
-          save(); tiles(); render();
+          if (marks[r.url] === k) delete marks[r.url]; else { marks[r.url] = k; if (k === 'apply') addFromPosting(r); }
+          saveMarks(); rankedTiles(); renderRanked();
         });
         acts.appendChild(b);
       });
@@ -199,7 +295,94 @@
     });
   }
 
-  // Companies tab, grouped by tier
+  // ---------- Tracker ----------
+  function fillStatusSelect(sel, current) {
+    statuses.forEach(function (s) {
+      var o = el('option', '', s.name); o.value = s.name; if (s.name === current) o.selected = true; sel.appendChild(o);
+    });
+  }
+  fillStatusSelect(document.querySelector('#addform [name=status]'), 'To apply');
+  fillStatusSelect(document.getElementById('tstatus'), '');
+
+  function trackerTiles() {
+    var box = document.getElementById('ttiles'); box.textContent = '';
+    function n(stage) { return apps.filter(function (a) { return stageOf[a.status] === stage; }).length; }
+    var sent = apps.filter(function (a) { return stageOf[a.status] !== 'planned'; }).length;
+    tile(box, sent, 'Applications sent'); tile(box, n('planned'), 'To apply');
+    tile(box, n('open') + n('won'), 'Active or offer'); tile(box, n('closed'), 'Closed');
+  }
+
+  function changeStatus(a, to) {
+    var next = JSON.parse(JSON.stringify(a));
+    next.history = (next.history || []).concat([{ at: today(), from: a.status, to: to }]);
+    next.status = to;
+    if (!next.applied && stageOf[to] !== 'planned') next.applied = today();
+    store.save(next);
+  }
+
+  function renderTracker() {
+    var q = document.getElementById('tq').value.toLowerCase(), st = document.getElementById('tstatus').value;
+    var list = document.getElementById('tlist'); list.textContent = '';
+    var order = {}; statuses.forEach(function (s, i) { order[s.name] = i; });
+    var shown = apps.filter(function (a) {
+      if (st && a.status !== st) return false;
+      return !q || (a.company + ' ' + a.role + ' ' + a.status).toLowerCase().indexOf(q) >= 0;
+    }).sort(function (x, y) { return (order[x.status] - order[y.status]) || String(y.applied).localeCompare(String(x.applied)); });
+    if (!shown.length) list.appendChild(el('p', 'empty', apps.length ? 'No applications match these filters.' : 'Nothing tracked yet. Press Apply on a ranked posting, or add one above.'));
+    shown.forEach(function (a) {
+      var card = el('div', 'card' + (stageOf[a.status] === 'closed' ? ' skip' : ''));
+      var top = el('div', 'row'); top.appendChild(el('span', 'co', a.company));
+      var sel = el('select', 'status-sel'); sel.setAttribute('aria-label', 'Status of ' + a.company);
+      fillStatusSelect(sel, a.status);
+      sel.addEventListener('change', function () { changeStatus(a, sel.value); });
+      top.appendChild(sel); card.appendChild(top);
+      var href = safeUrl(a.url), role;
+      if (href) { role = el('a', 'role', a.role); role.href = href; role.rel = 'noopener'; role.target = '_blank'; }
+      else role = el('span', 'role', a.role);
+      card.appendChild(role);
+      card.appendChild(el('div', 'meta', a.applied ? 'Applied ' + a.applied : 'Not sent yet'));
+      var note = el('input', 'note-in'); note.value = a.note || ''; note.placeholder = 'Note'; note.setAttribute('aria-label', 'Note for ' + a.company);
+      note.addEventListener('change', function () { var next = JSON.parse(JSON.stringify(a)); next.note = note.value; store.save(next); });
+      card.appendChild(note);
+      var acts = el('div', 'actions');
+      var del = el('button', 'btn danger', 'Delete'); del.type = 'button';
+      del.addEventListener('click', function () { if (window.confirm('Delete ' + a.company + ' – ' + a.role + '?')) store.remove(a.id); });
+      acts.appendChild(del); card.appendChild(acts);
+      if (a.history && a.history.length) {
+        var d = el('details'); d.appendChild(el('summary', '', 'Status history (' + a.history.length + ')'));
+        d.appendChild(el('div', '', a.history.map(function (h) { return h.at + ': ' + h.from + ' → ' + h.to; }).join('; ')));
+        card.appendChild(d);
+      }
+      list.appendChild(card);
+    });
+  }
+
+  document.getElementById('addform').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target, status = f.status.value;
+    store.save({ id: newId(), company: f.company.value.trim(), role: f.role.value.trim(), url: f.url.value.trim(),
+                 status: status, applied: stageOf[status] === 'planned' ? '' : today(), note: '', history: [] });
+    f.reset(); f.status.value = 'To apply';
+  });
+  ['tq', 'tstatus'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderTracker); });
+
+  function csvCell(v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  document.getElementById('export').addEventListener('click', async function () {
+    var rows = [['company', 'role', 'status', 'applied', 'url', 'note']].concat(apps.map(function (a) {
+      return [a.company, a.role, a.status, a.applied, a.url, a.note]; }));
+    var csv = rows.map(function (r) { return r.map(csvCell).join(','); }).join('\n');
+    try {
+      var dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+      if (dl) { await dl.save({ filename: 'applications.csv', data: csv }); return; }
+    } catch (e) { /* fall back to a normal download */ }
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'applications.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  listeners.push(function () { trackerTiles(); renderTracker(); });
+
+  // ---------- Companies ----------
   function universe() {
     var box = document.getElementById('universe');
     box.appendChild(el('p', 'sub', 'Your employer universe, best tier first. Edit companies.csv to change it.'));
@@ -213,7 +396,8 @@
     });
   }
 
-  tiles(); render(); universe();
+  rankedTiles(); renderRanked(); universe(); trackerTiles(); renderTracker(); render_store();
+  upgradeStore();
 })();
 </script>
 </body>

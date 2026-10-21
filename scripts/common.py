@@ -9,6 +9,19 @@ from pathlib import Path
 
 UA = "job-search-skill/0.1 (personal job posting monitor)"
 
+# The application status ladder: single source for the tracker page and references/data-model.md.
+# stage: planned = not sent yet, open = in progress, won = offer, closed = ended.
+STATUSES = [
+    {"name": "To apply", "stage": "planned"},
+    {"name": "Submitted", "stage": "open"},
+    {"name": "OA invited", "stage": "open"},
+    {"name": "OA done", "stage": "open"},
+    {"name": "Interview", "stage": "open"},
+    {"name": "Offer", "stage": "won"},
+    {"name": "Rejected", "stage": "closed"},
+    {"name": "Withdrawn", "stage": "closed"},
+]
+
 
 def load_profile(profile_dir: str | Path) -> dict:
     """Read profile.toml, keywords.toml and companies.csv from a profile folder."""

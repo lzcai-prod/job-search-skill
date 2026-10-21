@@ -14,5 +14,5 @@ jobs:
       - name: Demo page is up to date
         run: |
           python scripts/rank.py profiles/ui-ux examples/sample_postings.json out/ranked.json
-          python scripts/render_guide.py profiles/ui-ux out/ranked.json docs/index.html --demo
+          python scripts/render_guide.py profiles/ui-ux out/ranked.json docs/index.html --demo --applications=examples/sample_applications.json
           git diff --exit-code docs/index.html
