@@ -4,9 +4,12 @@ A posting is a dict with: company, title, location, url, description, posted_at,
 """
 
 import csv
+import re
 import tomllib
 from pathlib import Path
 
+SLUG_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}")
+MAX_RESPONSE_BYTES = 10 * 1024 * 1024  # a job-board answer larger than this is not a job board
 UA = "job-search-skill/0.1 (personal job posting monitor)"
 
 # The application status ladder: single source for the tracker page and references/data-model.md.
@@ -21,6 +24,11 @@ STATUSES = [
     {"name": "Rejected", "stage": "closed"},
     {"name": "Withdrawn", "stage": "closed"},
 ]
+
+
+def valid_slug(slug: str) -> bool:
+    """A board slug is one URL path segment: letters, digits, dot, dash, underscore."""
+    return bool(SLUG_RE.fullmatch(slug or ""))
 
 
 def load_profile(profile_dir: str | Path) -> dict:

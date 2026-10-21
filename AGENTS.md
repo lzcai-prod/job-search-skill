@@ -6,7 +6,7 @@ This repository is a **skill**: a method (`playbook/`, `SKILL.md`) plus small sc
 - Never submit applications or fill work-authorization, sponsorship, EEO, disability or criminal-history fields.
 - Never solve or bypass CAPTCHAs, rate limits or log-in walls.
 - Never commit secrets or personal data (profiles, resumes, application logs, `.env`).
-- No network access in tests; use `examples/` and `tests/fixtures/`.
+- No network access in tests; use `examples/` and small inline fixtures in the tests.
 
 ## Where things go
 - A new search: copy `profiles/_template/` to `profiles/<name>/`. Do not edit `_template`.

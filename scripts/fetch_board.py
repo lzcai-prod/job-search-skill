@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import UA, load_profile
+from common import MAX_RESPONSE_BYTES, UA, load_profile, valid_slug
 
 URLS = {
     "greenhouse": "https://boards-api.greenhouse.io/v1/boards/{slug}/jobs?content=true",
@@ -85,7 +85,10 @@ def get_json(url: str):
     _last[host] = time.monotonic()
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.load(resp)
+        raw = resp.read(MAX_RESPONSE_BYTES + 1)
+    if len(raw) > MAX_RESPONSE_BYTES:
+        raise ValueError("response too large")
+    return json.loads(raw)
 
 
 def fetch(company: str, ats: str, slug: str) -> list[dict]:
@@ -98,6 +101,9 @@ def main(profile_dir: str, out_path: str) -> None:
     for row in profile["companies"]:
         ats, slug = (row.get("ats") or "").strip(), (row.get("slug") or "").strip()
         if ats not in PARSERS or not slug:
+            continue
+        if not valid_slug(slug):
+            print(f"skip {row['company']}: invalid slug", file=sys.stderr)
             continue
         try:
             found = fetch(row["company"], ats, slug)

@@ -9,7 +9,7 @@ import fetch_board
 import find_boards
 import rank
 import render_guide
-from common import STATUSES, load_profile, tier_of
+from common import MAX_RESPONSE_BYTES, STATUSES, load_profile, tier_of, valid_slug
 
 PROFILE = ROOT / "profiles" / "ui-ux"
 SAMPLE = ROOT / "examples" / "sample_postings.json"
@@ -88,3 +88,51 @@ def test_sample_applications_use_known_statuses_and_universe_firms():
     seed = json.loads((ROOT / "examples" / "sample_applications.json").read_text(encoding="utf-8"))
     firms = {c["company"] for c in load_profile(PROFILE)["companies"]}
     assert all(a["status"] in names and a["company"] in firms for a in seed)
+
+
+def test_valid_slug_accepts_board_slugs_only():
+    assert all(valid_slug(s) for s in ["figma", "open-ai", "acme.co", "a_b", "x" * 64])
+    for bad in ["", "../x", "a/b", "a?b=1", "a#b", "a b", "-x", "x" * 65, "a@b"]:
+        assert not valid_slug(bad)
+
+
+def test_candidate_slugs_drop_invalid_hint():
+    assert find_boards.candidate_slugs("Acme", hint="../etc") == ["acme"]
+
+
+def test_fetch_skips_invalid_slug(tmp_path, monkeypatch):
+    prof = tmp_path / "p"
+    prof.mkdir()
+    for name in ("profile.toml", "keywords.toml"):
+        (prof / name).write_text("", encoding="utf-8")
+    (prof / "companies.csv").write_text("company,ats,slug\nEvil,greenhouse,../x\n", encoding="utf-8")
+    monkeypatch.setattr(fetch_board, "fetch", lambda *a: (_ for _ in ()).throw(AssertionError("fetched")))
+    out = tmp_path / "out.json"
+    fetch_board.main(str(prof), str(out))
+    assert json.loads(out.read_text(encoding="utf-8")) == []
+
+
+def test_get_json_rejects_oversized_response(monkeypatch):
+    class Resp:
+        def __init__(self, data):
+            self.data = data
+
+        def read(self, n=-1):
+            return self.data[:n] if n >= 0 else self.data
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    monkeypatch.setattr(fetch_board.time, "sleep", lambda s: None)
+    monkeypatch.setattr(fetch_board.urllib.request, "urlopen", lambda *a, **k: Resp(b"[" + b"1," * MAX_RESPONSE_BYTES + b"1]"))
+    try:
+        fetch_board.get_json("https://example.com/x")
+    except ValueError as exc:
+        assert "too large" in str(exc)
+    else:
+        raise AssertionError("oversized response accepted")
+    monkeypatch.setattr(fetch_board.urllib.request, "urlopen", lambda *a, **k: Resp(b'{"jobs": []}'))
+    assert fetch_board.get_json("https://example.com/x") == {"jobs": []}

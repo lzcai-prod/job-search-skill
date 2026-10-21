@@ -31,7 +31,7 @@ Give your agent this folder (for example drop it in its skills directory) and sa
 It is a design demo of one person's own job-search dashboard, rebuilt around sample UI/UX data: three tabs (Dashboard, Applications, CV Portal). You record applications yourself and the Dashboard reads them. Published as a Claude artifact, your rows save to the page's private database; anywhere else they save in your browser only. The CV Portal tab is a layout example: the skill does not include a CV runner or a mailbox scan, and it never submits anything for you.
 
 ## Make your own profile
-Copy `profiles/_template` to `profiles/<your-search>/`, or ask your agent to interview you and fill it in. Profiles you create are git-ignored by default so your details stay local.
+Copy `profiles/_template` to `profiles/<your-search>/`, or ask your agent to interview you and fill it in. Profiles you create are git-ignored by default so your details stay local. Copy `profiles/ui-ux` or `_template` instead of editing them in place: those two folders are tracked, so edits there could end up in a commit.
 
 ## Safety
 - It never submits applications, never fills work-authorization or EEO fields, and never bypasses CAPTCHAs or log-ins.
