@@ -1,0 +1,30 @@
+title_multiplier = 3
+min_score = 3
+
+[positive]
+"product designer" = 4
+"ux designer" = 4
+"ui designer" = 3
+"ux researcher" = 4
+"ux research" = 3
+"interaction design" = 3
+"visual designer" = 3
+"design systems" = 2
+"brand designer" = 2
+"content designer" = 2
+"design intern" = 3
+"intern" = 1
+"associate" = 1
+"figma" = 1
+"prototyping" = 1
+"user research" = 1
+"portfolio" = 1
+
+[negative]
+"software engineer" = 4
+"data engineer" = 4
+"sales" = 3
+"recruiter" = 3
+"account executive" = 3
+"marketing manager" = 2
+"accountant" = 3

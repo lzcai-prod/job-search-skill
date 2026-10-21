@@ -1,0 +1,21 @@
+# Starter profile for a UI/UX / product design search. Edit every value to match you.
+
+[goal]
+summary = "Product design or UX research role at a company with a real design team"
+role_families = ["product design", "UX design", "UX research", "visual / brand design"]
+locations = ["New York", "San Francisco", "Remote"]
+exclude_titles = ["senior", "staff", "principal", "director", "head of", "lead"]
+level = "intern"
+
+[constraints]
+needs_sponsorship = false
+
+[tiers]
+default = 5
+
+[buckets]
+design_forward_product = 1
+big_tech_design = 2
+growth_startup = 3
+agency_studio = 4
+in_house_enterprise = 5

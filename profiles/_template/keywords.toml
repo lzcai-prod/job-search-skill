@@ -1,0 +1,10 @@
+# Weights are added up per posting. A title match counts title_multiplier times.
+title_multiplier = 3
+min_score = 3          # postings scoring below this are dropped
+
+[positive]
+"<role keyword>" = 3
+"<skill keyword>" = 1
+
+[negative]
+"<off-target keyword>" = 3

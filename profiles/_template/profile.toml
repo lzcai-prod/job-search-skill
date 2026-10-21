@@ -1,0 +1,20 @@
+# Copy this folder to profiles/<your-search>/ and edit. Your agent can fill it in by
+# interviewing you (see SKILL.md). Nothing here is ever sent anywhere.
+
+[goal]
+summary = "<one sentence: the roles you want first>"
+role_families = ["<role family 1>", "<role family 2>"]
+locations = ["<city or region>", "Remote"]   # empty list = no location filter
+exclude_titles = ["<title keyword to skip>"]  # e.g. seniority words you are too junior for
+level = "<intern | entry | mid>"
+
+[constraints]
+needs_sponsorship = false   # if true, prefer employers that sponsor (see references/sources.md)
+
+[tiers]
+default = 5                 # companies not listed in companies.csv land here
+
+# Lower number = higher priority. Rank these by your own taste.
+[buckets]
+bucket_a = 1
+bucket_b = 2

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Search Guide</title>
+<style>
+  :root { --bg:#ffffff; --fg:#1b1f24; --muted:#5b6570; --line:#dfe3e8; --accent:#2b5fd9; --card:#f6f8fa; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --accent:#7aa2ff; --card:#1b1f24; }
+  }
+  :root[data-theme="dark"] { --bg:#14171b; --fg:#e6e9ed; --muted:#9aa4af; --line:#2a2f36; --accent:#7aa2ff; --card:#1b1f24; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, sans-serif; }
+  main { max-width:960px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.6rem; } h2 { margin-top:2rem; border-bottom:1px solid var(--line); padding-bottom:.3rem; }
+  a { color:var(--accent); } code { background:var(--card); padding:1px 5px; border-radius:4px; }
+  .note { background:var(--card); border-left:4px solid var(--accent); padding:10px 14px; border-radius:4px; }
+  .scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.92rem; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td.why { color:var(--muted); font-size:.82rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Your job search guide</h1>
+  <p class="note"><strong>You review and submit every application yourself.</strong>
+  This tool finds and ranks; it never submits for you.</p>
+  <h2>Your profile</h2>
+  {{PROFILE}}
+  <h2>Ranked list (top-down)</h2>
+  <div class="scroll">{{RANKED}}</div>
+  <h2>The method</h2>
+  {{PLAYBOOK}}
+</main>
+</body>
+</html>

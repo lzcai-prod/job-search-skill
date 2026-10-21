@@ -1,0 +1,23 @@
+company,bucket,tier,ats,slug,notes
+Figma,design_forward_product,1,,,Starter suggestion; edit freely
+Linear,design_forward_product,1,,,
+Notion,design_forward_product,1,,,
+Stripe,design_forward_product,1,,,
+Airbnb,design_forward_product,1,,,
+Spotify,design_forward_product,1,,,
+Canva,design_forward_product,1,,,
+Duolingo,design_forward_product,2,,,
+Webflow,design_forward_product,2,,,
+Vercel,design_forward_product,2,,,
+Miro,design_forward_product,2,,,
+Asana,design_forward_product,2,,,
+Pinterest,big_tech_design,2,,,
+Dropbox,big_tech_design,2,,,
+Adobe,big_tech_design,2,,,
+Shopify,growth_startup,3,,,
+Intercom,growth_startup,3,,,
+Mercury,growth_startup,3,,,
+Ramp,growth_startup,3,,,
+Calm,growth_startup,3,,,
+Coursera,growth_startup,3,,,
+IDEO,agency_studio,4,,,Agencies often use their own careers page; add ats/slug only if it uses Greenhouse, Lever or Ashby

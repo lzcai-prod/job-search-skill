@@ -1,0 +1,9 @@
+[
+  {"company": "Figma", "title": "Product Design Intern", "location": "New York, NY", "url": "https://example.com/jobs/1", "description": "Work in Figma on design systems and prototyping with our product design team.", "posted_at": "2026-10-15", "ats": "greenhouse"},
+  {"company": "Notion", "title": "UX Researcher, Intern", "location": "Remote", "url": "https://example.com/jobs/2", "description": "Run user research studies and share insights.", "posted_at": "2026-10-18", "ats": "ashby"},
+  {"company": "Duolingo", "title": "Associate Product Designer", "location": "San Francisco, CA", "url": "https://example.com/jobs/3", "description": "Interaction design and visual design for learner experiences.", "posted_at": "2026-10-10", "ats": "greenhouse"},
+  {"company": "Some Startup", "title": "UI Designer", "location": "New York", "url": "https://example.com/jobs/4", "description": "Own the UI of our app. Figma required.", "posted_at": "2026-10-19", "ats": "lever"},
+  {"company": "Figma", "title": "Senior Software Engineer", "location": "New York, NY", "url": "https://example.com/jobs/5", "description": "Build backend services.", "posted_at": "2026-10-12", "ats": "greenhouse"},
+  {"company": "Some Startup", "title": "Senior Product Designer", "location": "New York", "url": "https://example.com/jobs/6", "description": "Lead design for the team.", "posted_at": "2026-10-11", "ats": "lever"},
+  {"company": "Acme Corp", "title": "Sales Development Representative", "location": "Remote", "url": "https://example.com/jobs/7", "description": "Outbound sales.", "posted_at": "2026-10-09", "ats": "lever"}
+]
